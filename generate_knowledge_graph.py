@@ -11,9 +11,16 @@ import asyncio
 # Load the .env file
 load_dotenv()
 # Get API key from environment variable
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = os.getenv("OPENROUTER_API_KEY")
 
-llm = ChatOpenAI(temperature=0, model_name="gpt-4o")
+neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
+neo4j_password = os.getenv("NEO4J_PASSWORD", "password")
+
+llm = ChatOpenAI(temperature=0, 
+    model_name="microsoft/mai-ds-r1:free",
+    openai_api_key=api_key,
+    openai_api_base="https://openrouter.ai/api/v1")
 
 graph_transformer = LLMGraphTransformer(llm=llm)
 
