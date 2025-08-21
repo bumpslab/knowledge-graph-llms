@@ -1,7 +1,7 @@
 # Import necessary modules
 import streamlit as st
 import streamlit.components.v1 as components  # For embedding custom HTML
-from generate_knowledge_graph import generate_knowledge_graph
+from generate_knowledge_graph import generate_knowledge_graph, get_accumulated_graph_visualization, store_graph_in_neo4j
 
 # Set up Streamlit page configuration
 st.set_page_config(
@@ -21,6 +21,28 @@ input_method = st.sidebar.radio(
     ["Upload txt", "Input text"],  # Options for uploading a file or manually inputting text
 )
 
+# Neo4j storage options
+st.sidebar.markdown("---")
+st.sidebar.title("Storage Options")
+store_in_neo4j = st.sidebar.checkbox("Store in Neo4j database", value=True)
+
+# Sidebar section for accumulated graph visualization
+st.sidebar.markdown("---")
+st.sidebar.title("Accumulated Graph")
+if st.sidebar.button("Show Accumulated Graph"):
+    with st.spinner("Loading accumulated graph from Neo4j..."):
+        net = get_accumulated_graph_visualization()
+        if net is not None:
+            st.success("Accumulated graph loaded successfully!")
+            
+            # Save and display the accumulated graph
+            output_file = "accumulated_knowledge_graph.html"
+            net.save_graph(output_file)
+            
+            # Open the HTML file and display it within the Streamlit app
+            HtmlFile = open(output_file, 'r', encoding='utf-8')
+            components.html(HtmlFile.read(), height=1000)
+
 # Case 1: User chooses to upload a .txt file
 if input_method == "Upload txt":
     # File uploader widget in the sidebar
@@ -34,7 +56,8 @@ if input_method == "Upload txt":
         if st.sidebar.button("Generate Knowledge Graph"):
             with st.spinner("Generating knowledge graph..."):
                 # Call the function to generate the graph from the text
-                net = generate_knowledge_graph(text)
+                document_name = uploaded_file.name
+                net = generate_knowledge_graph(text, document_name=document_name, store_in_neo4j=store_in_neo4j)
                 st.success("Knowledge graph generated successfully!")
                 
                 # Save the graph to an HTML file
@@ -54,7 +77,8 @@ else:
         if st.sidebar.button("Generate Knowledge Graph"):
             with st.spinner("Generating knowledge graph..."):
                 # Call the function to generate the graph from the input text
-                net = generate_knowledge_graph(text)
+                document_name = "Manual Input"
+                net = generate_knowledge_graph(text, document_name=document_name, store_in_neo4j=store_in_neo4j)
                 st.success("Knowledge graph generated successfully!")
                 
                 # Save the graph to an HTML file

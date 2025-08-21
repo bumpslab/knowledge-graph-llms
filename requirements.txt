@@ -2,6 +2,10 @@
 langchain>=0.1.0
 langchain-experimental>=0.0.45
 langchain-openai>=0.1.0
+langchain-neo4j
+
+# Neo4j
+neo4j
 
 # Environment variable support
 python-dotenv>=1.0.0
