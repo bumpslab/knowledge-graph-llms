@@ -4,44 +4,31 @@
 
 ```
 knowledge-graph-llms/
+├── .github/
+│   └── copilot-instructions.md       # GitHub Copilot 지침
+├── component_explanation/           # 컴포넌트 설명 문서
+│   ├── langchain.md                # LangChain 설명
+│   ├── neo4j.md                   # Neo4j 설명
+│   ├── openrouter.md              # OpenRouter 설명
+│   └── streamlit.md               # Streamlit 설명
 ├── .env                              # 환경 변수 (실제 API 키)
 ├── .env.example                      # 환경 변수 템플릿
 ├── .gitignore                        # Git 무시 파일 설정
-├── .github/
-│   └── copilot-instructions.md       # GitHub Copilot 지침
 ├── CLAUDE.md                         # Claude Code 작업 지침서
 ├── LICENSE                           # 라이센스 파일
 ├── README.md                         # 프로젝트 설명서 (한국어)
-├── requirements.txt                  # Python 의존성 패키지 목록
 ├── app.py                           # Streamlit 메인 웹 애플리케이션
 ├── generate_knowledge_graph.py      # 지식 그래프 생성 핵심 로직
-├── knowledge_graph.html            # 개별 그래프 시각화 출력
-├── accumulated_knowledge_graph.html # 누적 그래프 시각화 출력
 ├── knowledge_graph.ipynb           # Jupyter 노트북 (프로토타입)
 ├── knowledge_graph.md              # LangChain 그래프 변환 문서
 ├── neo4jgraph.md                   # Neo4j 그래프 관련 문서
-├── assets/                         # 스크린샷 및 이미지 자산
-│   ├── CreateAPIKey.png
-│   ├── Fork.png
-│   ├── connect_dashboard.png
-│   ├── create_new_codespace.png
-│   ├── createapikey_2.png
-│   ├── example_screen.png
-│   ├── make_env.png
-│   ├── neo4j_credentials.png
-│   ├── neo4j_setup.png
-│   ├── openrouter_1.png
-│   └── saveapikey.png
-└── component_explanation/           # 컴포넌트 설명 문서
-    ├── langchain.md                # LangChain 역할과 중요성
-    ├── neo4j.md                   # Neo4j 역할과 중요성
-    ├── openrouter.md              # OpenRouter 역할과 중요성
-    └── streamlit.md               # Streamlit 역할과 중요성
+├── requirements.txt                  # Python 의존성 패키지 목록
+└── assets/                         # 스크린샷 및 이미지 자산 (11개 파일)
 ```
 
 ## 파일별 상세 설명
 
-### 🎯 핵심 실행 파일
+### 핵심 실행 파일
 
 #### `app.py`
 - **역할**: Streamlit 기반 웹 애플리케이션의 메인 엔트리포인트
@@ -61,7 +48,7 @@ knowledge-graph-llms/
   - `get_accumulated_graph_visualization()`: 누적 그래프 조회
 - **외부 API 통합**: OpenRouter를 통한 LLM 접근
 
-### 📋 설정 및 환경 파일
+### 설정 및 환경 파일
 
 #### `.env` / `.env.example`
 - **역할**: 환경 변수 관리 (API 키, 데이터베이스 연결 정보)
@@ -81,7 +68,7 @@ knowledge-graph-llms/
   - `pyvis`: 네트워크 시각화 라이브러리
   - `python-dotenv`: 환경 변수 관리
 
-### 📊 출력 및 시각화 파일
+### 출력 및 시각화 파일
 
 #### `knowledge_graph.html`
 - **역할**: 개별 문서에서 추출된 지식 그래프의 인터랙티브 시각화
@@ -109,7 +96,7 @@ knowledge-graph-llms/
 #### `neo4jgraph.md`
 - **역할**: Neo4j 그래프 데이터베이스 특화 문서
 
-### 🧩 컴포넌트 설명 문서
+### 컴포넌트 설명 문서
 
 #### `component_explanation/`
 프로젝트의 주요 기술 컴포넌트들에 대한 심화 설명 디렉토리
@@ -119,22 +106,17 @@ knowledge-graph-llms/
 - **`neo4j.md`**: 그래프 데이터베이스의 역할과 GraphRAG 기능
 - **`openrouter.md`**: 통합 AI 모델 접근 플랫폼의 이점과 활용
 
-### 🎨 자산 파일
-
-#### `assets/`
-프로젝트 문서화를 위한 스크린샷 및 이미지 모음
-
-- **API 키 관련**: `CreateAPIKey.png`, `createapikey_2.png`, `saveapikey.png`
-- **환경 설정**: `make_env.png`, `openrouter_1.png`
-- **Neo4j 설정**: `neo4j_setup.png`, `neo4j_credentials.png`, `connect_dashboard.png`
-- **GitHub 관련**: `Fork.png`, `create_new_codespace.png`
-- **사용 예시**: `example_screen.png`
-
 ### 🔧 프로토타입 파일
 
 #### `knowledge_graph.ipynb`
 - **역할**: Jupyter 노트북 형태의 프로토타입 및 실험 환경
 - **용도**: 알고리즘 테스트, 데이터 분석, 시각화 실험
+
+### 자산 파일
+
+#### `assets/`
+- **역할**: 프로젝트 문서화를 위한 스크린샷 및 이미지 자산 (11개 파일)
+- **내용**: API 키 설정, 환경 구성, Neo4j 연결, GitHub 설정 관련 이미지
 
 ## 데이터 흐름
 
