@@ -1,7 +1,7 @@
 # Streamlit: 웹 애플리케이션 프레임워크
 
 > **참조:**
-> - (https://github.com/streamlit/streamlit)[https://github.com/streamlit/streamlit]
+> - [https://github.com/streamlit/streamlit](https://github.com/streamlit/streamlit)
 
 
 ## 개요

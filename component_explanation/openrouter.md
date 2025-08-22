@@ -1,7 +1,7 @@
 # OpenRouter: 통합 AI 모델 접근 플랫폼
 
 > **참조:**
-> - (https://openrouter.ai/docs/overview/principles)[https://openrouter.ai/docs/overview/principles]
+> - [https://openrouter.ai/docs/overview/principles](https://openrouter.ai/docs/overview/principles)
 
 ## 개요
 

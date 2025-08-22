@@ -1,8 +1,8 @@
 # LangChain 패키지 설명
 
 > **참조:**
-> - (https://python.langchain.com/docs/concepts/why_langchain/)[https://python.langchain.com/docs/concepts/why_langchain/]
-> - (https://python.langchain.com/docs/introduction/)[https://python.langchain.com/docs/introduction/]
+> - [https://python.langchain.com/docs/concepts/why_langchain/](https://python.langchain.com/docs/concepts/why_langchain/)
+> - [https://python.langchain.com/docs/introduction/](https://python.langchain.com/docs/introduction/)
 
 ## LangChain이란 무엇인가?
 
