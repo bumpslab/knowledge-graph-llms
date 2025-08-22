@@ -1,5 +1,9 @@
 # LangChain 패키지 설명
 
+> **참조:**
+> - (https://python.langchain.com/docs/concepts/why_langchain/)[https://python.langchain.com/docs/concepts/why_langchain/]
+> - (https://python.langchain.com/docs/introduction/)[https://python.langchain.com/docs/introduction/]
+
 ## LangChain이란 무엇인가?
 
 **LangChain**은 대규모 언어 모델(LLM) 애플리케이션 개발을 위한 포괄적인 오픈소스 프레임워크입니다. LangChain의 핵심 목표는 "개발자가 추론 능력을 가진 애플리케이션을 최대한 쉽게 구축할 수 있도록 지원하는 것"입니다.
@@ -12,9 +16,8 @@
 - 도구 호출(tool calling)과 구조화된 출력 등 고급 기능 지원
 
 ### 2. 복잡한 애플리케이션 오케스트레이션
-- **LangGraph**를 통해 복잡한 AI 애플리케이션의 제어 흐름 관리
-- 순환, 메모리, 인간-참여-루프 등 고급 애플리케이션 패턴 지원
-- 멀티스텝 워크플로우와 에이전트 시스템 구축 용이
+- LLM의 **제어 흐름 관리**
+- 멀티스텝 워크플로우 구축에 용이
 
 ### 3. 관찰 가능성 및 평가
 - **LangSmith**를 통해 AI 애플리케이션의 성능 모니터링 및 평가

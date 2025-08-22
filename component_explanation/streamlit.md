@@ -1,5 +1,9 @@
 # Streamlit: 웹 애플리케이션 프레임워크
 
+> **참조:**
+> - (https://github.com/streamlit/streamlit)[https://github.com/streamlit/streamlit]
+
+
 ## 개요
 
 Streamlit은 Python 기반의 오픈소스 웹 애플리케이션 프레임워크로, 데이터 과학자와 머신러닝 엔지니어가 복잡한 웹 개발 지식 없이도 인터랙티브한 웹 앱을 빠르게 구축할 수 있게 해주는 도구입니다.

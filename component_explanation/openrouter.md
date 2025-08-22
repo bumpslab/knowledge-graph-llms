@@ -1,5 +1,8 @@
 # OpenRouter: 통합 AI 모델 접근 플랫폼
 
+> **참조:**
+> - (https://openrouter.ai/docs/overview/principles)[https://openrouter.ai/docs/overview/principles]
+
 ## 개요
 
 OpenRouter는 수백 개의 AI 모델에 대한 통합 API 접근을 제공하는 플랫폼입니다. 단일 표준화된 API를 통해 다양한 AI 모델과 공급자에 접근할 수 있게 하며, 가격 최적화, 성능 향상, 안정성 보장을 핵심 원칙으로 합니다.
