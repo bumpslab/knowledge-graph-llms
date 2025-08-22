@@ -1,6 +1,6 @@
 # 지식 그래프 생성기
 
-**`LangChain`**과 **`OpenRouter`** API를 사용하여 텍스트 입력에서 그래프 데이터(엔티티 및 관계)를 추출하고, 그래프 정보를 **`Neo4j`** GraphDB에 저장하며 인터랙티브 그래프를 시각화하는 **`Streamlit`** 애플리케이션입니다.
+**`LangChain`** 과 **`OpenRouter`** API를 사용하여 텍스트 입력에서 그래프 데이터(엔티티 및 관계)를 추출하고, 그래프 정보를 **`Neo4j`** GraphDB에 저장하며 인터랙티브 그래프를 시각화하는 **`Streamlit`** 애플리케이션입니다.
 ![CleanShot 2025-05-28 at 13 11 46](https://github.com/user-attachments/assets/4fef9158-8dd8-432d-bb8a-b53953a82c6c)
 
 👉 이 저장소는 Thu Vu의 [Youtube 튜토리얼](https://www.youtube.com/watch?v=O-T_6KOXML4)과 [github 저장소](https://github.com/thu-vu92/knowledge-graph-llms)를 기반으로 만들어졌습니다:
@@ -45,10 +45,10 @@
 ### 2. Neo4j 설정
 
 1. [https://neo4j.com/product/auradb/](https://neo4j.com/product/auradb/)로 이동하여 **`Start Free`**를 클릭
-2. **`Continue with Google`**을 클릭하고 로그인
+2. **`Continue with Google`** 클릭하고 로그인
 3. 각 단계를 거쳐 필요한 정보를 입력
-4. **`Create instance`**를 클릭
-5. **`Download to Continue`**를 클릭
+4. **`Create instance`** 클릭
+5. **`Download to Continue`** 클릭
 ![Alt text](./assets/neo4j_setup.png)
 6. .txt 파일이 **`Downloads`** 디렉토리에 있는지, 다음과 같은 정보를 포함하는지 확인
 ![Alt text](./assets/neo4j_credentials.png)
@@ -58,18 +58,18 @@
 ### 3. OpenRouter API 키 가져오기
 
 1. [https://openrouter.ai/](https://openrouter.ai/)에서 github으로 로그인
-2. **`Authorize OpenRouterTeam`**을 클릭
-3. 우측 상단 아이콘을 클릭하고 **`Keys`**를 클릭
+2. **`Authorize OpenRouterTeam`** 클릭
+3. 우측 상단 아이콘을 클릭하고 **`Keys`** 클릭
 ![Alt text](./assets/openrouter_1.png)
-4. **`Create API Key`**를 클릭
+4. **`Create API Key`** 클릭
 ![Alt text](./assets/CreateAPIKey.png)
-5. 이름을 입력하고 **`credit limit`**을 0으로 설정한 후 **`Create`**를 클릭
+5. 이름을 입력하고 **`credit limit`** 을 0으로 설정한 후 **`Create`** 클릭
 ![Alt text](./assets/createapikey_2.png) 
 6. API 키를 복사하여 **쉽게 접근할 수 있는 곳에 저장하고 다른 사람과 공유하지 마십시오.**
 ![Alt text](./assets/saveapikey.png)
 ---
 ## 설치
-**의존성(패키지를 실행시키기 위한 패키지) 설치**를 위해 **`uv`** 사용을 권장합니다. **`uv`**를 설치하고 가상 환경을 활성화하십시오.  
+**의존성(패키지를 실행시키기 위한 패키지) 설치**를 위해 **`uv`** 사용을 권장합니다. **`uv`** 를 설치하고 가상 환경을 활성화하십시오.  
 **`uv`** 설치:
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -135,20 +135,20 @@ streamlit run app.py
 
 ## 작동 원리
 
-이 애플리케이션은 **`OpenRouter API`**를 통해 다양한 LLM 모델에 접근하고, **`LangChain`**의 LLMGraphTransformer를 사용하여 텍스트에서 지식 그래프를 생성합니다:
+이 애플리케이션은 **`OpenRouter API`** 를 통해 다양한 LLM 모델에 접근하고, **`LangChain`** 의 LLMGraphTransformer를 사용하여 텍스트에서 지식 그래프를 생성합니다:
 
 ### 1. 텍스트 처리 및 엔터티 추출
-- **`OpenRouter API`**를 통해 Microsoft의 모델 등 다양한 LLM에 접근
-- **`LLMGraphTransformer`**가 입력 텍스트를 분석하여 엔터티(인물, 조직, 장소, 개념 등)를 식별
+- **`OpenRouter API`** 를 통해 Microsoft의 모델 등 다양한 LLM에 접근
+- **`LLMGraphTransformer`** 가 입력 텍스트를 분석하여 엔터티(인물, 조직, 장소, 개념 등)를 식별
 - 엔터티 간의 의미적 관계를 추출하여 구조화된 그래프 데이터로 변환
 
 ### 2. Neo4j 그래프 데이터베이스 저장
-- 추출된 엔터티와 관계를 **`Neo4j GraphDB`**에 영구 저장
+- 추출된 엔터티와 관계를 **`Neo4j GraphDB`** 에 영구 저장
 - 각 노드에 소스 문서명과 생성 시간 등 메타데이터 추가
 - 여러 문서의 지식을 누적하여 종합적인 지식 그래프 구축
 
 ### 3. 인터랙티브 시각화
-- **`PyVis`**를 사용하여 그래프를 인터랙티브 HTML로 변환
+- **`PyVis`** 를 사용하여 그래프를 인터랙티브 HTML로 변환
 - 물리 기반 레이아웃으로 노드와 엣지를 동적 배치
 - 필터링, 확대/축소, 드래그 등 다양한 상호작용 기능 제공
 
