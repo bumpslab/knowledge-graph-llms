@@ -102,7 +102,7 @@ uv pip install -r requirements.txt
 ---
 ### OpenRouter API Key와 Neo4j 자격 증명
 
-**루트 디렉토리**에 OpenRouter API 키, Neo4j uri 및 자격 증명이 포함된 <mark><b>.env</b></mark> **파일을 생성하세요:**
+**루트 디렉토리**에 <mark><b>OpenRouter API</b></mark> 키, <mark><b>Neo4j</b></mark> uri 및 자격 증명이 포함된 <mark><b>.env</b></mark> **파일을 생성하세요:**
 ```
 OPENROUTER_API_KEY=your_openai_api_key_here
 NEO4J_URI=your_neo4j_url_here
@@ -136,11 +136,27 @@ streamlit run app.py
 
 ## 작동 원리
 
-이 애플리케이션은 OpenAI의 GPT-4o 모델과 함께 LangChain의 실험적 그래프 변환기를 사용하여:
-1. 입력 텍스트에서 엔터티를 추출
-2. 이러한 엔터티 간의 관계를 식별
-3. 이 정보를 나타내는 그래프 구조를 생성
-4. vis.js 시각화 라이브러리를 위한 Python 인터페이스인 PyVis를 사용하여 그래프를 시각화
+이 애플리케이션은 <mark><b>OpenRouter API</b></mark>를 통해 다양한 LLM 모델에 접근하고, <mark><b>LangChain</b></mark>의 실험적 그래프 변환기를 사용하여 텍스트에서 지식 그래프를 생성합니다:
+
+### 1. 텍스트 처리 및 엔터티 추출
+- <mark><b>OpenRouter API</b></mark>를 통해 Microsoft의 모델 등 다양한 LLM에 접근
+- <mark><b>LLMGraphTransformer</b></mark>가 입력 텍스트를 분석하여 엔터티(인물, 조직, 장소, 개념 등)를 식별
+- 엔터티 간의 의미적 관계를 추출하여 구조화된 그래프 데이터로 변환
+
+### 2. Neo4j 그래프 데이터베이스 저장
+- 추출된 엔터티와 관계를 <mark><b>Neo4j GraphDB</b></mark>에 영구 저장
+- 각 노드에 소스 문서명과 생성 시간 등 메타데이터 추가
+- 여러 문서의 지식을 누적하여 종합적인 지식 그래프 구축
+
+### 3. 인터랙티브 시각화
+- <mark><b>PyVis</b></mark>를 사용하여 그래프를 인터랙티브 HTML로 변환
+- 물리 기반 레이아웃으로 노드와 엣지를 동적 배치
+- 필터링, 확대/축소, 드래그 등 다양한 상호작용 기능 제공
+
+### 4. 누적 지식 관리
+- 여러 문서에서 추출된 지식을 하나의 통합된 그래프로 결합
+- 문서 간 공통 엔터티 연결을 통한 지식 네트워크 확장
+- 시간에 따른 지식 축적과 관계 발견 지원
 
 ## 라이선스
 
