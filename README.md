@@ -3,8 +3,7 @@
 <mark><b>LangChain</b></mark>과 <mark><b>OpenRouter</b></mark> API를 사용하여 텍스트 입력에서 그래프 데이터(엔티티 및 관계)를 추출하고, 그래프 정보를 <mark><b>Neo4j</b></mark> GraphDB에 저장하며 인터랙티브 그래프를 시각화하는 <mark><b>Streamlit</b></mark> 애플리케이션입니다.
 ![CleanShot 2025-05-28 at 13 11 46](https://github.com/user-attachments/assets/4fef9158-8dd8-432d-bb8a-b53953a82c6c)
 
-👉 이 저장소는 Thu Vu의 Youtube 튜토리얼의 일부입니다:
-[![](https://img.youtube.com/vi/O-T_6KOXML4/0.jpg)](https://www.youtube.com/watch?v=O-T_6KOXML4)
+👉 이 저장소는 Thu Vu의 [Youtube 튜토리얼](https://www.youtube.com/watch?v=O-T_6KOXML4)과 [github 저장소](https://github.com/thu-vu92/knowledge-graph-llms)를 기반으로 만들어졌습니다:
 
 ## 기능
 텍스트에서 그래프 데이터 추출, Graph DB에 데이터 저장, Streamlit UI 이용한 시각화
@@ -17,9 +16,9 @@
 
 ### 필수 요구사항
 
-- Github 계정 및 Github Codespaces 세팅
-- Neo4j 설정
-- OpenRouter API 키
+- <mark><b>Github</b></mark> 계정 및 <mark><b>Github Codespaces</b><mark> 세팅
+- <mark><b>Neo4j</b></mark> 설정
+- <mark><b>OpenRouter</b></mark> API 키
 
 ## 설정
 

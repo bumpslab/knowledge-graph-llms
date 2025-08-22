@@ -24,10 +24,7 @@ llm = ChatOpenAI(temperature=0,
     openai_api_key=api_key,
     openai_api_base="https://openrouter.ai/api/v1")
 
-graph_transformer = LLMGraphTransformer(llm=llm,
-    allowed_nodes=["Person", "Organization", "Location", "Event", "Concept", "Product", "Technology"],
-    allowed_relationships=["WORKS_AT", "LOCATED_IN", "RELATED_TO", "PART_OF", "USES", "CREATED", "MANAGES"]
-    )
+graph_transformer = LLMGraphTransformer(llm=llm)
 
 neo4j_graph = None  # Global variable to hold Neo4j connection
 
