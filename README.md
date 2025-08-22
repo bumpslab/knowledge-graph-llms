@@ -26,7 +26,7 @@
 
 1. [https://github.com/](https://github.com/) 접속, 우상단 <mark><b>Sign up</b></mark> 클릭
 2. <mark><b>Continue with Google</b></mark> 선택 혹은 정보 입력 후 <mark><b>Create account</b></mark> 선택
-3. 다음 [링크](https://github.com/bumpslab/knowledge-graph-llms)에 접속하여 이 저장소를 **자신의 github 저장소로 fork:**
+3. 이 저장소를 **자신의 github 저장소로 fork:**
 ![Alt text](./assets/Fork.png)
 
 4. [https://github.com/features/codespaces?locale=ko-KR](https://github.com/features/codespaces?locale=ko-KR) 접속, <mark><b>무료로 시작하기</b></mark> 클릭
@@ -135,7 +135,7 @@ streamlit run app.py
 
 ## 작동 원리
 
-이 애플리케이션은 <mark><b>OpenRouter API</b></mark>를 통해 다양한 LLM 모델에 접근하고, <mark><b>LangChain</b></mark>의 실험적 그래프 변환기를 사용하여 텍스트에서 지식 그래프를 생성합니다:
+이 애플리케이션은 <mark><b>OpenRouter API</b></mark>를 통해 다양한 LLM 모델에 접근하고, <mark><b>LangChain</b></mark>의 LLMGraphTransformer를 사용하여 텍스트에서 지식 그래프를 생성합니다:
 
 ### 1. 텍스트 처리 및 엔터티 추출
 - <mark><b>OpenRouter API</b></mark>를 통해 Microsoft의 모델 등 다양한 LLM에 접근

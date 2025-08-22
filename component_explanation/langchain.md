@@ -1,4 +1,4 @@
-# LangChain 패키지 설명
+# LangChain: LLM 파이프라인 구축(오케스트레이션) 프레임워크
 
 > **참조:**
 > - [https://python.langchain.com/docs/concepts/why_langchain/](https://python.langchain.com/docs/concepts/why_langchain/)
