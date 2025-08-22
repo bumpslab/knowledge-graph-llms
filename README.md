@@ -25,44 +25,52 @@ LangChain과 OpenRouter API를 사용하여 텍스트 입력에서 그래프 데
 
 ### 1. Github 계정 및 Github Codespaces 설정
 
-1. [https://github.com/](https://github.com/) 접속, 우상단 'Sign up' 클릭
-2. 'Continue with Google' 선택 혹은 정보 입력 후 'Create account' 선택
-3. 다음 [링크](https://github.com/bumpslab/knowledge-graph-llms)에 접속하여 이 저장소를 자신의 github 저장소로 Fork:
+1. [https://github.com/](https://github.com/) 접속, 우상단 `Sign up` 클릭
+2. `Continue with Google` 선택 혹은 정보 입력 후 `Create account` 선택
+3. 다음 [링크](https://github.com/bumpslab/knowledge-graph-llms)에 접속하여 이 저장소를 **자신의 github 저장소로 fork:**
 ![Alt text](./assets/Fork.png)
-4. [https://github.com/features/codespaces?locale=ko-KR](https://github.com/features/codespaces?locale=ko-KR) 접속, '무료로 시작하기' 클릭
-5. Fork한 저장소를 이용하여 codespace 생성
+
+4. [https://github.com/features/codespaces?locale=ko-KR](https://github.com/features/codespaces?locale=ko-KR) 접속, `무료로 시작하기` 클릭
+5. fork한 저장소를 이용하여 codespace 생성
 ![Alt text](./assets/create_new_codespace.png)
+
 6. 다음과 같은 화면이 나올 시 정상적으로 완료된 상태
 ![Alt text](./assets/example_screen.png)
 
+> **참고:** 
+> 자신의 저장소를 이용해서 codespace를 생성하게 되면
+> git clone <my repo url>를 한 것과 동일한 상태로 vscode와 터미널을 사용할 수 있습니다.
+> codespace를 사용하지 않는다면 터미널에서 git clone <my repo url>을 실행해서 원격 저장소를 로컬로 불러와야 합니다.
+
+---
 ### 2. Neo4j 설정
 
 1. [https://neo4j.com/product/auradb/](https://neo4j.com/product/auradb/)로 이동하여 'Start Free'를 클릭
-2. 'Continue with Google'을 클릭하고 로그인
+2. `Continue with Google`을 클릭하고 로그인
 3. 각 단계를 거쳐 필요한 정보를 입력
-4. 'Create instance'를 클릭
-5. 'Download to Continue'를 클릭
-![Alt text](./assets/neo4j_setup.png). 
-6. .txt 파일이 'Downloads' 디렉토리에 있는지 확인
-7. 페이지 로딩 완료 시 'Dashboards' 클릭 후 Dashboard를 Instance와 연결하기
-![Alt text](./assets/connect_dashboard.png). 
-
+4. `Create instance`를 클릭
+5. `Download to Continue`를 클릭
+![Alt text](./assets/neo4j_setup.png)
+6. .txt 파일이 `Downloads` 디렉토리에 있는지 확인
+7. 페이지 로딩 완료 시 `Dashboards` 클릭 후 Dashboard를 Instance와 연결하기
+![Alt text](./assets/connect_dashboard.png)
+---
 ### 3. OpenRouter API 키 가져오기
 
 1. [https://openrouter.ai/](https://openrouter.ai/)에서 github으로 로그인
-2. 'Authorize OpenRouterTeam'을 클릭
-3. 우측 상단 아이콘을 클릭하고 'Keys'를 클릭
-![Alt text](./assets/openrouter_1.png). 
-4. 'Create API Key'를 클릭
-![Alt text](./assets/CreateAPIKey.png). 
-5. 이름을 입력하고 credit limit을 0으로 설정한 후 'Create'를 클릭
-![Alt text](./assets/createapikey_2.png). 
-6. API 키를 복사하여 쉽게 접근할 수 있는 곳에 저장하고 다른 사람과 공유하지 마십시오.
-![Alt text](./assets/saveapikey.png). 
-
+2. `Authorize OpenRouterTeam`을 클릭
+3. 우측 상단 아이콘을 클릭하고 `Keys`를 클릭
+![Alt text](./assets/openrouter_1.png)
+4. `Create API Key`를 클릭
+![Alt text](./assets/CreateAPIKey.png)
+5. 이름을 입력하고 `credit limit`을 0으로 설정한 후 `Create`를 클릭
+![Alt text](./assets/createapikey_2.png) 
+6. API 키를 복사하여 **쉽게 접근할 수 있는 곳에 저장하고 다른 사람과 공유하지 마십시오.**
+![Alt text](./assets/saveapikey.png)
+---
 ## 설치
-의존성(패키지를 실행시키기 위한 패키지) 설치를 위해 uv 사용을 권장합니다. uv를 설치하고 가상 환경을 활성화하세요.  
-uv 설치:
+**의존성(패키지를 실행시키기 위한 패키지) 설치**를 위해 `uv` 사용을 권장합니다. `uv`를 설치하고 가상 환경을 활성화하십시오.  
+`uv` 설치:
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
@@ -75,41 +83,36 @@ source .venv/bin/activate
 
 ### 의존성
 
-이 애플리케이션은 다음 Python 패키지가 필요합니다:
+이 패키지가 작동하기 위해서는 다음 Python 패키지가 설치 되어있어야 합니다.
 
-- langchain (>= 0.1.0): 핵심 LLM 프레임워크
-- langchain-experimental (>= 0.0.45): 실험적 LangChain 기능
-- langchain-openai (>= 0.1.0): LangChain용 OpenAI 통합
-- langchain-neo4j: LangChain용 Neo4j 통합
-- python-dotenv (>= 1.0.0): 환경 변수 지원
-- pyvis (>= 0.3.2): 그래프 시각화
-- streamlit (>= 1.32.0): 웹 UI 프레임워크
+- `langchain (>= 0.1.0)`: 핵심 LLM 프레임워크
+- `langchain-experimental (>= 0.0.45)`: 실험적 LangChain 기능
+- `langchain-openai (>= 0.1.0)`: LangChain용 OpenAI 통합
+- `langchain-neo4j`: LangChain용 Neo4j 통합
+- `python-dotenv (>= 1.0.0)`: 환경 변수 지원
+- `pyvis (>= 0.3.2)`: 그래프 시각화
+- `streamlit (>= 1.32.0)`: 웹 UI 프레임워크
 
-제공된 requirements.txt 파일을 사용하여 모든 필수 의존성을 설치하십시오:
+제공된 `requirements.txt` 파일을 사용하여 모든 **필수 의존성을 설치하십시오:**
 
 ```bash
 uv pip install -r requirements.txt
 ```
+---
+### OpenRouter API Key와 Neo4j 자격 증명
 
-### 원격 저장소 로컬로 가져오기
-
-1. 로컬(Github Codespaces) terminal에서 자신의 저장소를 clone 하십시오.
-```bash
-git clone [repository-url]
+**루트 디렉토리**에 OpenRouter API 키, Neo4j uri 및 자격 증명이 포함된 `.env` **파일을 생성하세요:**
 ```
-   참고: `[repository-url]`을 이 자기 저장소의 실제 URL로 바꾸세요.
-
-2. 루트 디렉토리에 OpenRouter API 키, Neo4j uri 및 자격 증명이 포함된 `.env` 파일을 생성하세요:
-   ```
-   OPENROUTER_API_KEY=your_openai_api_key_here
-   NEO4J_URI=your_neo4j_url_here
-   NEO4J_USERNAME=your_neo4j_username_here
-   NEO4J_PASSWORD=your_neo4j_password_here
-   ```
-
+OPENROUTER_API_KEY=your_openai_api_key_here
+NEO4J_URI=your_neo4j_url_here
+NEO4J_USERNAME=your_neo4j_username_here
+NEO4J_PASSWORD=your_neo4j_password_here
+```
+![Alt text](./assets/make_env.png)
+---
 ## 애플리케이션 실행
 
-Streamlit 앱을 실행하려면:
+`Streamlit` 앱을 실행하려면:
 
 ```bash
 streamlit run app.py
