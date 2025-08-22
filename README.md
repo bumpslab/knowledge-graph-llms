@@ -1,18 +1,19 @@
 # 지식 그래프 생성기
 
-LangChain과 OpenRouter API를 사용하여 텍스트 입력에서 그래프 데이터(엔터티 및 관계)를 추출하고, 그래프 정보를 Neo4j 그래프 데이터베이스에 저장하며 인터랙티브 그래프를 시각화하는 Streamlit 애플리케이션입니다.
+LangChain과 OpenRouter API를 사용하여 텍스트 입력에서 그래프 데이터(엔티티 및 관계)를 추출하고, 그래프 정보를 Neo4j GraphDB에 저장하며 인터랙티브 그래프를 시각화하는 Streamlit 애플리케이션입니다.
 ![CleanShot 2025-05-28 at 13 11 46](https://github.com/user-attachments/assets/4fef9158-8dd8-432d-bb8a-b53953a82c6c)
 
 👉 이 저장소는 Thu Vu의 Youtube 튜토리얼의 일부입니다:
 [![](https://img.youtube.com/vi/O-T_6KOXML4/0.jpg)](https://www.youtube.com/watch?v=O-T_6KOXML4)
 
 ## 기능
+텍스트에서 그래프 데이터 추출, Graph DB에 데이터 저장, Streamlit UI 이용한 시각화
 
 - 두 가지 입력 방법: 텍스트 업로드(.txt 파일) 또는 직접 텍스트 입력
 - 인터랙티브 지식 그래프 시각화
 - 물리 기반 레이아웃을 통한 사용자 정의 가능한 그래프 표시
-- OpenRouter API에서 제공하는 LLM을 활용한 엔터티 관계 추출
-
+- OpenRouter API에서 제공하는 LLM을 활용한 엔티티 관계 추출
+- Neo4j DB에 엔티티, 관계 저장
 
 ### 필수 요구사항
 
@@ -20,9 +21,9 @@ LangChain과 OpenRouter API를 사용하여 텍스트 입력에서 그래프 데
 - Neo4j 설정
 - OpenRouter API 키
 
-### 설정
+## 설정
 
-### Github 계정 및 Github Codespaces 설정
+### 1. Github 계정 및 Github Codespaces 설정
 
 1. [https://github.com/](https://github.com/) 접속, 우상단 'Sign up' 클릭
 2. 'Continue with Google' 선택 혹은 정보 입력 후 'Create account' 선택
@@ -31,34 +32,36 @@ LangChain과 OpenRouter API를 사용하여 텍스트 입력에서 그래프 데
 4. [https://github.com/features/codespaces?locale=ko-KR](https://github.com/features/codespaces?locale=ko-KR) 접속, '무료로 시작하기' 클릭
 5. Fork한 저장소를 이용하여 codespace 생성
 ![Alt text](./assets/create_new_codespace.png)
+6. 다음과 같은 화면이 나올 시 정상적으로 완료된 상태
+![Alt text](./assets/example_screen.png)
 
-### Neo4j 설정
+### 2. Neo4j 설정
 
 1. [https://neo4j.com/product/auradb/](https://neo4j.com/product/auradb/)로 이동하여 'Start Free'를 클릭
 2. 'Continue with Google'을 클릭하고 로그인
 3. 각 단계를 거쳐 필요한 정보를 입력
 4. 'Create instance'를 클릭
 5. 'Download to Continue'를 클릭
-![Alt text](./assets/neo4j_setup.png)
+![Alt text](./assets/neo4j_setup.png). 
 6. .txt 파일이 'Downloads' 디렉토리에 있는지 확인
 7. 페이지 로딩 완료 시 'Dashboards' 클릭 후 Dashboard를 Instance와 연결하기
-![Alt text](./assets/connect_dashboard.png)
+![Alt text](./assets/connect_dashboard.png). 
 
-### OpenRouter API 키 가져오기
+### 3. OpenRouter API 키 가져오기
 
 1. [https://openrouter.ai/](https://openrouter.ai/)에서 github으로 로그인
 2. 'Authorize OpenRouterTeam'을 클릭
 3. 우측 상단 아이콘을 클릭하고 'Keys'를 클릭
-![Alt text](./assets/openrouter_1.png)
+![Alt text](./assets/openrouter_1.png). 
 4. 'Create API Key'를 클릭
-![Alt text](./assets/CreateAPIKey.png)
+![Alt text](./assets/CreateAPIKey.png). 
 5. 이름을 입력하고 credit limit을 0으로 설정한 후 'Create'를 클릭
-![Alt text](./assets/createapikey_2.png)
-6. API 키를 복사하여 쉽게 접근할 수 있는 곳에 저장고 다른 사람과 공유하지 마십시오.
-![Alt text](./assets/saveapikey.png)
+![Alt text](./assets/createapikey_2.png). 
+6. API 키를 복사하여 쉽게 접근할 수 있는 곳에 저장하고 다른 사람과 공유하지 마십시오.
+![Alt text](./assets/saveapikey.png). 
 
 ## 설치
-의존성(패키지를 실행시키기 위한 패키지) 설치를 위해 uv 사용을 권장합니다. uv를 설치하고 가상 환경을 활성화하세요.
+의존성(패키지를 실행시키기 위한 패키지) 설치를 위해 uv 사용을 권장합니다. uv를 설치하고 가상 환경을 활성화하세요.  
 uv 설치:
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
