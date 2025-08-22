@@ -36,7 +36,7 @@ async def extract_graph_data(text):
 - **무료 모델 활용**: `microsoft/mai-ds-r1:free` 모델로 초기 개발 비용 절약
 - **환경 변수 관리**: `.env` 파일을 통한 API 키 안전 관리
 
-## OpenRouter의 필요성
+## OpenRouter 특징
 
 ### 1. 모델 다양성과 접근성
 - **단일 API**: OpenAI 호환 인터페이스로 여러 모델 접근
@@ -45,13 +45,11 @@ async def extract_graph_data(text):
 
 ### 2. 비용 최적화
 - **가격 비교**: 여러 공급자 간 최적 가격 탐색
-- **통합 청구**: 여러 모델 사용 시 단일 청구서
 - **무료 티어**: `microsoft/mai-ds-r1:free` 모델로 개발 비용 절약
 
 ### 3. 안정성과 가용성
 - **Fallback 시스템**: 특정 공급자 장애 시 자동 대체
 - **Smart Routing**: 성능과 가용성 기반 자동 라우팅
-- **높은 Rate Limit**: 직접 API 사용 대비 향상된 처리량
 
 ## 프로젝트별 구현 세부사항
 
@@ -84,20 +82,17 @@ llm = ChatOpenAI(
 graph_documents = asyncio.run(extract_graph_data(text))
 ```
 
-## 직접 API vs OpenRouter 비교
+## OpenAI API vs OpenRouter 비교
 
-### 직접 OpenAI API 사용의 한계
+### OpenAI API
 - OpenAI 모델만 사용 가능
-- Rate limit 제한
-- 높은 비용
-- 단일 장애점
+- 무조건 유료
+- 더 나은 안전성 (실제 Production에 활용)
 
-### OpenRouter 사용의 이점
-- 다양한 모델 선택 (무료 모델 포함)
-- 비용 최적화
-- 높은 안정성
-- 통합 관리
-- OpenAI API 호환성으로 기존 코드 재사용
+### OpenRouter
+- 다양한 모델 선택
+- 무료 모델 사용 가능
+- 주로 프로토타이핑 시 활용
 
 ## 실제 사용 사례
 

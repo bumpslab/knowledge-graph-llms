@@ -82,7 +82,7 @@ def get_neo4j_connection():
 - **Neo4jGraph**로 Neo4j 데이터베이스와 통합
 - LangChain의 그래프 문서 형식을 직접 Neo4j에 저장
 
-## LangChain이 이 프로젝트에 제공하는 이점
+## LangChain 장점
 
 ### 1. 개발 생산성 향상
 - 복잡한 LLM-그래프 변환 로직을 간단한 API로 추상화
