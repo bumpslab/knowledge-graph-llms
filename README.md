@@ -1,9 +1,9 @@
 # Knowledge Graph Generator
 
-A Streamlit application that extract graph data (entities and relationships) from text input using LangChain and OpenAI's GPT models, and generates interactive graphs.
+A Streamlit application that extract graph data (entities and relationships) from text input using LangChain and OpenRouter API, stores the graph information in Neo4j graph database and visualizes interactive graphs.
 ![CleanShot 2025-05-28 at 13 11 46](https://github.com/user-attachments/assets/4fef9158-8dd8-432d-bb8a-b53953a82c6c)
 
-👉 This repo is part of my project tutorial on Youtube:
+👉 This repo is part of Thu Vu's tutorial on Youtube:
 [![](https://img.youtube.com/vi/O-T_6KOXML4/0.jpg)](https://www.youtube.com/watch?v=O-T_6KOXML4)
 
 ## Features
@@ -11,14 +11,50 @@ A Streamlit application that extract graph data (entities and relationships) fro
 - Two input methods: text upload (.txt files) or direct text input
 - Interactive knowledge graph visualization
 - Customizable graph display with physics-based layout
-- Entity relationship extraction powered by OpenAI's GPT-4o model
+- Entity relationship extraction powered by LLMs provided by OpenRouter API
 
 ## Installation
+We recommend using uv to install the dependencies. Install uv and activate your virtual environment.
+Installing uv:
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Creating and activating virtual environment:
+```
+uv venv 
+source .venv/bin/activate
+```
 
 ### Prerequisites
 
-- Python 3.8 or higher
-- OpenAI API key
+- Python 3.8 or higher (Done by Github Codespaces)
+- Neo4j setup
+- OpenRouter API key
+
+### Setting up 
+
+### Setting up Neo4j
+1. Go to [https://neo4j.com/product/auradb/](https://neo4j.com/product/auradb/) and hit 'Start Free'
+2. Hit 'Continue with Google', sign
+3. Go through each step and fill in information needed
+4. Hit 'Create instance'
+5. Hit 'Download to Continue'
+![Alt text](./assets/neo4j_setup.png)
+6. Check if .txt file is in your 'Downloads' directory
+
+### Getting OpenRouter API key
+
+1. Sign in via github at [https://openrouter.ai/](https://openrouter.ai/)
+2. Click Authorize OpenRouterTeam
+3. Click on the top right corner icon, and click on 'Keys'
+![Alt text](./assets/openrouter_1.png)
+4. Click on 'Create API Key'
+![Alt text](./assets/CreateAPIKey.png)
+5. Fill in Name, set credit limit to 0 and hit 'Create'
+![Alt text](./assets/createapikey_2.png)
+6. Copy the API Key and save it somewhere easily accessible. Do not share with other people
+![Alt text](./assets/saveapikey.png)
 
 ### Dependencies
 
@@ -27,6 +63,7 @@ The application requires the following Python packages:
 - langchain (>= 0.1.0): Core LLM framework
 - langchain-experimental (>= 0.0.45): Experimental LangChain features
 - langchain-openai (>= 0.1.0): OpenAI integration for LangChain
+- langchain-neo4j: Neo4j integration for LangChain
 - python-dotenv (>= 1.0.0): Environment variable support
 - pyvis (>= 0.3.2): Graph visualization
 - streamlit (>= 1.32.0): Web UI framework
@@ -34,22 +71,24 @@ The application requires the following Python packages:
 Install all required dependencies using the provided requirements.txt file:
 
 ```bash
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 ```
 
 ### Setup
 
 1. Clone this repository:
    ```bash
-   git clone [repository-url]
-   cd knowledge_graph_app_2
+   git clone https://github.com/bumpslab/knowledge-graph-llms.git
    ```
 
    Note: Replace `[repository-url]` with the actual URL of this repository.
 
-2. Create a `.env` file in the root directory with your OpenAI API key:
+2. Create a `.env` file in the root directory with your OpenRouter API key, Neo4j uri and credentials:
    ```
-   OPENAI_API_KEY=your_openai_api_key_here
+   OPENROUTER_API_KEY=your_openai_api_key_here
+   NEO4J_URI=your_neo4j_url_here
+   NEO4J_USERNAME=your_neo4j_username_here
+   NEO4J_PASSWORD=your_neo4j_password_here
    ```
 
 ## Running the Application
