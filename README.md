@@ -44,7 +44,7 @@
 ---
 ### 2. Neo4j 설정
 
-1. [https://neo4j.com/product/auradb/](https://neo4j.com/product/auradb/)로 이동하여 **`Start Free`**를 클릭
+1. [https://neo4j.com/product/auradb/](https://neo4j.com/product/auradb/)로 이동하여 **`Start Free`** 클릭
 2. **`Continue with Google`** 클릭하고 로그인
 3. 각 단계를 거쳐 필요한 정보를 입력
 4. **`Create instance`** 클릭
