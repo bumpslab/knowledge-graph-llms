@@ -1,0 +1,49 @@
+Title: Potent Antiviral Activities of Type I Interferons to SARS-CoV-2 Infection 1 2 3
+
+Authors: Emily Mantlo, Natalya Bukreyeva, Junki Maruyama, Slobodan Paessler, Cheng Huang
+
+Abstract:
+Abstract
+
+The ongoing historic outbreak of COVID-19 not only constitutes a global public health crisis, but also carries a 33 devastating social and economic impact. The disease is caused by a newly identified coronavirus, SevereAcute Respiratory Syndrome coronavirus 2 (SARS-CoV-2). There is an urgent need to identify antivirals to 35 curtail the COVID-19 pandemic. Herein, we report the remarkable sensitivity of SARS-CoV-2 to recombinant 36 human interferons α and β (IFNα/β). Treatment with IFN-α at a concentration of 50 international units (IU) per 37 milliliter drastically reduces viral titers by 3.4 log or over 4 log, respectively, in Vero cells. The EC50 of IFN-α 38 and IFN-β treatment is 1.35 IU/ml and 0.76 IU/ml, respectively, in Vero cells. These results suggest that SARS-39 CoV-2 is more sensitive than many other human pathogenic viruses, including SARS-CoV. Overall, our results 40 demonstrate the potent efficacy of human Type I IFN in suppressing SARS-CoV-2 infection, a finding which 41 could inform future treatment options for COVID-19.42 43
+
+
+
+Full Text:
+
+
+Therefore, there is an urgent need to find treatments for COVID-19. Drugs already approved for the treatment 55 . CC-BY-NC-ND 4.0 International license author/funder. It is made available under a The copyright holder for this preprint (which was not peer-reviewed) is the . https://doi.org/10.1101/2020.04.02.022764 doi: bioRxiv preprint of other diseases may offer the most expedient option for treating COVID-19, and several such drugs are 56 already being tested in clinical trials.
+
+58
+
+Type I interferons (IFN-α/β) have broad spectrum antiviral activities against RNA viruses, which act by inducing 59 an antiviral response across a wide range of cell types and mediating adaptive immune response. Humans 60 produce 13 types of IFN-α and a singular IFN-β (2). Type I IFNs ultimately induces a number of interferon-61 stimulated genes (ISGs) which encode for a variety of antiviral effectors (3). Notably, IFN- production leads to 62 a positive feedback loop that further stimulates the expression of many of the IFN-α genes (4). Clinically, Type The copyright holder for this preprint (which was not peer-reviewed) is the . https://doi.org/10.1101/2020.04.02.022764 doi: bioRxiv preprint Vero cells (2x10 4 /well) were seeded into 48-well plates for 24 h and treated with human IFN-β1a (mammalian, 
+
+93
+
+The monolayers were washed with PBS for three times to remove dead cells, fixed with 10% formaldehyde, (Fig. 1 ). The peak virus titer was 5.5x10 6 TCID50/ml at MOI 0.01 and 3.75x10 5 TCID50/ml at MOI 1,
+
+03
+
+indicating that viral replication was more efficient at a low MOI (MOI=0.01) than a high MOI (MOI=1).
+
+04
+
+Additionally, virus infection caused strong cytopathic effect (CPE), which was evident at 48 hpi, much later than 05 the peak of virus production (at 40 hpi). The copyright holder for this preprint (which was not peer-reviewed) is the . https://doi.org/10.1101/2020.04.02.022764 doi: bioRxiv preprint returned, and cells were incubated for a further 22 hours. Supernatants were then collected, and viral titers 11 were determined via TCID50 assay. The result indicated that IFN- treatment potently inhibited SARS-CoV-2 12 infection. Virus titers were not detectable except at the lowest concentration tested (50 IU/ml), at which the viral 13 titers were drastically reduced by 4 logs of magnitude (Fig. 2) . For IFN-β, the virus titers were below the 14 detection limit at all concentrations tested (50 u/ml-1000u/ml), indicating more potent anti-SARS-CoV-2 activity 15 than IFN-α. Consistently, no CPE was observable under microscopic examination in all IFN-treated samples.
+
+17
+
+We next tested the antiviral efficacy of IFN-α and IFN-β at lower concentrations (1-50 IU/ml). Both IFN-α and 18 IFN-β dose-dependently inhibited virus infection at these lower concentrations (Fig. 3) . IFN-α exhibited anti-
+
+19
+
+SARS-CoV-2 activity at a concentration as low as 5 IU/ml, resulting in a significant reduction of viral titer by The copyright holder for this preprint (which was not peer-reviewed) is the . https://doi.org/10.1101/2020.04.02.022764 doi: bioRxiv preprint Our data clearly demonstrate that SARS-CoV-2 is highly sensitive to both IFN-α and IFN-β treatment in 39 cultured cells, which is comparable to the IFN-sensitive VSV. Our discovery reveals a weakness of the new 
+
+50
+
+Compared to SARS-CoV-2, it seems that SARS-CoV is relatively less sensitive to IFN treatment in vitro (8, 9) .
+
+51
+
+One study reported that the EC50 of IFN-β for SARS-CoV is 95 or 105 IU/ml depending on virus strains (10). The copyright holder for this preprint (which was not peer-reviewed) is the . https://doi.org/10.1101/2020.04.02.022764 doi: bioRxiv preprint Therefore, some of these drugs may have the potential to be repurposed for the treatment of COVID-19 either 66 alone or in combination with other antiviral therapies. The copyright holder for this preprint (which was not peer-reviewed) is the . https://doi.org/10.1101/2020.04.02.022764 doi: bioRxiv preprint
+
+

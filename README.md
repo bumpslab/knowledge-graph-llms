@@ -1,9 +1,15 @@
-# 지식 그래프 생성기
+# COVID-19 지식 그래프 생성기
 
 **`LangChain`** 과 **`OpenRouter`** API를 사용하여 텍스트 입력에서 그래프 데이터(엔티티 및 관계)를 추출하고, 그래프 정보를 **`Neo4j`** GraphDB에 저장하며 인터랙티브 그래프를 시각화하는 **`Streamlit`** 애플리케이션입니다.
 ![CleanShot 2025-05-28 at 13 11 46](https://github.com/user-attachments/assets/4fef9158-8dd8-432d-bb8a-b53953a82c6c)
 
 👉 이 저장소는 Thu Vu의 [Youtube 튜토리얼](https://www.youtube.com/watch?v=O-T_6KOXML4)과 [github 저장소](https://github.com/thu-vu92/knowledge-graph-llms)를 기반으로 만들어졌습니다:
+
+COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19-eda-parse-json-and-generate-clean-csv/notebook)에 있는 데이터를 이용했습니다.
+
+> **참조:**
+> - [https://www.kaggle.com/code/xhlulu/cord-19-eda-parse-json-and-generate-clean-csv/notebook](https://www.kaggle.com/code/xhlulu/cord-19-eda-parse-json-and-generate-clean-csv/notebook)
+> - [https://www.kaggle.com/datasets/allen-institute-for-ai/CORD-19-research-challenge/data](https://www.kaggle.com/datasets/allen-institute-for-ai/CORD-19-research-challenge/data)
 
 ## 기능
 텍스트에서 그래프 데이터 추출, Graph DB에 데이터 저장, Streamlit UI 이용한 시각화
