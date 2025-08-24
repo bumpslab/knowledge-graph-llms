@@ -1,4 +1,4 @@
-from langchain_experimental.graph_transformers import LLMGraphTransformer
+from llm_graph_transformer import LLMGraphTransformer
 from langchain_core.documents import Document
 from langchain_openai import ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -90,20 +90,17 @@ async def extract_graph_data(text):
             metadata=chunk_metadata
         ))
     
-    # Extract graph from all chunks
-    all_graph_documents = []
-    for i, document in enumerate(documents):
-        try:
-            if len(chunks) > 1:
-                st.write(f"🔬 **Processing chunk {i+1}/{len(chunks)}...**")
-            
-            graph_docs = await graph_transformer.aconvert_to_graph_documents([document])
-            all_graph_documents.extend(graph_docs)
-        except Exception as e:
-            st.warning(f"⚠️ **Error processing chunk {i+1}:** {e}")
-            continue
-    
-    return all_graph_documents
+    # Extract graph from all documents at once
+    try:
+        if len(chunks) > 0:
+            st.write(f"🔬 **Processing {len(documents)} document chunks...**")
+        
+        graph_documents = await graph_transformer.aconvert_to_graph_documents(documents)
+        return graph_documents
+        
+    except Exception as e:
+        st.error(f"❌ **Error processing documents:** {e}")
+        return []
 
 
 def visualize_graph(graph_documents):
