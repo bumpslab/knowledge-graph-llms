@@ -1,6 +1,7 @@
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_core.documents import Document
 from langchain_openai import ChatOpenAI
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pyvis.network import Network
 from langchain_neo4j import Neo4jGraph
 import streamlit as st
@@ -8,6 +9,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 import os
 import asyncio
+from kg_config import EXTRACTION_CONFIG
 
 
 # Load the .env file
@@ -20,11 +22,29 @@ neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
 neo4j_password = os.getenv("NEO4J_PASSWORD", "password")
 
 llm = ChatOpenAI(temperature=0, 
-    model_name="microsoft/mai-ds-r1:free",
+    model_name="moonshotai/kimi-k2:free",
     openai_api_key=api_key,
     openai_api_base="https://openrouter.ai/api/v1")
 
-graph_transformer = LLMGraphTransformer(llm=llm)
+graph_transformer = LLMGraphTransformer(llm=llm,
+    allowed_nodes=["viral_strain","viral_gene","human_gene","cell_type","tissue_type","organ_system","symptom","clinical_outcome",
+    "drug","drug_class","vaccine","treatment_protocol","risk_factor","gene_variant","pathology","biological_process"],
+    allowed_relationships=["upregulates", "downregulates", "has_positive_correlation_with", "has_negative_correlation_with",
+    "interacts_with","is_expressed_in", "is_risk_factor_for", "treats", "prevents"],
+    additional_instructions="Do NOT extract author information or references, Countries etc. Only extract biomedical entities and relationships."
+)
+
+# Initialize text splitter for chunking long documents
+text_splitter = RecursiveCharacterTextSplitter(
+    separators=["\n\n", "\n", ". ", ".", " ", ""],
+    chunk_size=EXTRACTION_CONFIG.get("chunk_size", 1500),
+    chunk_overlap=EXTRACTION_CONFIG.get("overlap", 200),
+    length_function=len,
+    is_separator_regex=False,
+)
+
+# Minimum chunk size requirement
+MIN_CHUNK_SIZE = 1000
 
 neo4j_graph = None  # Global variable to hold Neo4j connection
 
@@ -32,6 +52,7 @@ neo4j_graph = None  # Global variable to hold Neo4j connection
 async def extract_graph_data(text):
     """
     Asynchronously extracts graph data from input text using a graph transformer.
+    Automatically chunks long text to ensure better processing.
 
     Args:
         text (str): Input text to be processed into graph format.
@@ -39,9 +60,50 @@ async def extract_graph_data(text):
     Returns:
         list: A list of GraphDocument objects containing nodes and relationships.
     """
-    documents = [Document(page_content=text)]
-    graph_documents = await graph_transformer.aconvert_to_graph_documents(documents)
-    return graph_documents
+    # Check if text needs chunking
+    if len(text) > MIN_CHUNK_SIZE:
+        # Split text into chunks
+        chunks = text_splitter.split_text(text)
+        
+        # Filter out chunks that are too small
+        chunks = [chunk for chunk in chunks if len(chunk) >= MIN_CHUNK_SIZE]
+        
+        if not chunks:
+            # If no chunks meet minimum size, use original text
+            chunks = [text]
+        
+        if len(chunks) > 1:
+            st.write(f"📄 **Text split into {len(chunks)} chunks** (min {MIN_CHUNK_SIZE} chars each)")
+    else:
+        chunks = [text]
+    
+    # Create documents from chunks
+    documents = []
+    for i, chunk in enumerate(chunks):
+        chunk_metadata = {}
+        if len(chunks) > 1:
+            chunk_metadata["chunk_index"] = i
+            chunk_metadata["total_chunks"] = len(chunks)
+        
+        documents.append(Document(
+            page_content=chunk,
+            metadata=chunk_metadata
+        ))
+    
+    # Extract graph from all chunks
+    all_graph_documents = []
+    for i, document in enumerate(documents):
+        try:
+            if len(chunks) > 1:
+                st.write(f"🔬 **Processing chunk {i+1}/{len(chunks)}...**")
+            
+            graph_docs = await graph_transformer.aconvert_to_graph_documents([document])
+            all_graph_documents.extend(graph_docs)
+        except Exception as e:
+            st.warning(f"⚠️ **Error processing chunk {i+1}:** {e}")
+            continue
+    
+    return all_graph_documents
 
 
 def visualize_graph(graph_documents):
@@ -54,12 +116,25 @@ def visualize_graph(graph_documents):
     Returns:
         pyvis.network.Network: The visualized network graph object.
     """
+    if not graph_documents:
+        st.warning("⚠️ **No graph documents to visualize**")
+        return None
+    
     # Create network
     net = Network(height="1200px", width="100%", directed=True,
                       notebook=False, bgcolor="#222222", font_color="white", filter_menu=True, cdn_resources='remote') 
 
-    nodes = graph_documents[0].nodes
-    relationships = graph_documents[0].relationships
+    # Collect all nodes and relationships from all graph documents
+    all_nodes = []
+    all_relationships = []
+    
+    for doc in graph_documents:
+        all_nodes.extend(doc.nodes)
+        all_relationships.extend(doc.relationships)
+    
+    # Use combined nodes and relationships
+    nodes = all_nodes
+    relationships = all_relationships
 
     # Build lookup for valid nodes
     node_dict = {node.id: node for node in nodes}
