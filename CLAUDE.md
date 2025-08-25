@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Streamlit-based knowledge graph application that extracts entities and relationships from text using LangChain and stores them in Neo4j. The application uses OpenRouter API for LLM access instead of direct OpenAI integration, providing flexibility to use various models including free tiers.
+This is a Streamlit-based knowledge graph application that extracts entities and relationships from text using LangChain and stores them in Neo4j. The application uses Google's Gemini API for LLM access via ChatGoogleGenerativeAI.
 
 ## Key Architecture Components
 
@@ -14,7 +14,7 @@ This is a Streamlit-based knowledge graph application that extracts entities and
   - `visualize_graph()`: PyVis network visualization with physics-based layout
   - `store_graph_in_neo4j()`: Neo4j storage with metadata enhancement
   - `get_accumulated_graph_visualization()`: Retrieves and visualizes all stored knowledge across documents
-- **OpenRouter Integration**: Uses ChatOpenAI with custom base URL pointing to OpenRouter API (`https://openrouter.ai/api/v1`)
+- **Google Gemini Integration**: Uses ChatGoogleGenerativeAI with gemini-2.5-flash model
 
 ## Development Commands
 
@@ -40,7 +40,7 @@ streamlit run app.py
 
 ### Environment Configuration
 Required environment variables in `.env`:
-- `OPENROUTER_API_KEY`: API key for OpenRouter service
+- `GOOGLE_API_KEY`: API key for Google Gemini service
 - `NEO4J_URI`: Neo4j database connection string (e.g., bolt://localhost:7687)
 - `NEO4J_USERNAME`: Neo4j username
 - `NEO4J_PASSWORD`: Neo4j password
@@ -48,9 +48,9 @@ Required environment variables in `.env`:
 ## Key Technical Details
 
 ### LLM Model Configuration
-- Currently uses `microsoft/mai-ds-r1:free` model through OpenRouter
+- Currently uses `gemini-2.5-flash` model through Google Gemini API
 - Temperature set to 0 for consistent extraction results
-- Model can be changed by modifying the `model_name` parameter in `generate_knowledge_graph.py`
+- Model can be changed by modifying the model parameter in the ChatGoogleGenerativeAI initialization
 
 ### Data Flow
 1. Text input (file upload or manual entry) → 

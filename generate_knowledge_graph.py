@@ -1,6 +1,6 @@
 from llm_graph_transformer import LLMGraphTransformer
 from langchain_core.documents import Document
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pyvis.network import Network
 from langchain_neo4j import Neo4jGraph
@@ -15,16 +15,17 @@ from kg_config import EXTRACTION_CONFIG
 # Load the .env file
 load_dotenv()
 # Get API key from environment variable
-api_key = os.getenv("OPENROUTER_API_KEY")
+api_key = os.getenv("GOOGLE_API_KEY")
 
 neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
 neo4j_password = os.getenv("NEO4J_PASSWORD", "password")
 
-llm = ChatOpenAI(temperature=0, 
-    model_name="moonshotai/kimi-k2:free",
-    openai_api_key=api_key,
-    openai_api_base="https://openrouter.ai/api/v1")
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    temperature=0,
+    google_api_key=api_key
+)
 
 graph_transformer = LLMGraphTransformer(llm=llm,
     allowed_nodes=["viral_strain","viral_gene","human_gene","cell_type","tissue_type","organ_system","symptom","clinical_outcome",
@@ -43,9 +44,6 @@ text_splitter = RecursiveCharacterTextSplitter(
     is_separator_regex=False,
 )
 
-# Minimum chunk size requirement
-MIN_CHUNK_SIZE = 1000
-
 neo4j_graph = None  # Global variable to hold Neo4j connection
 
 # Extract graph data from input text
@@ -60,20 +58,31 @@ async def extract_graph_data(text):
     Returns:
         list: A list of GraphDocument objects containing nodes and relationships.
     """
+    # Get chunk size from config
+    chunk_size = EXTRACTION_CONFIG.get("chunk_size", 1500)
+    max_chunks = 10  # Gemini rate limit: 10 requests per minute
+    
     # Check if text needs chunking
-    if len(text) > MIN_CHUNK_SIZE:
+    if len(text) > chunk_size:
         # Split text into chunks
         chunks = text_splitter.split_text(text)
         
-        # Filter out chunks that are too small
-        chunks = [chunk for chunk in chunks if len(chunk) >= MIN_CHUNK_SIZE]
-        
-        if not chunks:
-            # If no chunks meet minimum size, use original text
-            chunks = [text]
-        
-        if len(chunks) > 1:
-            st.write(f"📄 **Text split into {len(chunks)} chunks** (min {MIN_CHUNK_SIZE} chars each)")
+        # Limit chunks to respect Gemini rate limits
+        if len(chunks) > max_chunks:
+            st.warning(f"⚠️ **Text would create {len(chunks)} chunks, limiting to {max_chunks} due to API rate limits**")
+            # Calculate new chunk size to fit within limit
+            new_chunk_size = len(text) // max_chunks + 1
+            temp_splitter = RecursiveCharacterTextSplitter(
+                separators=["\n\n", "\n", ". ", ".", " ", ""],
+                chunk_size=new_chunk_size,
+                chunk_overlap=EXTRACTION_CONFIG.get("overlap", 200),
+                length_function=len,
+                is_separator_regex=False,
+            )
+            chunks = temp_splitter.split_text(text)[:max_chunks]
+            st.write(f"📄 **Text split into {len(chunks)} chunks** (~{new_chunk_size} chars each)")
+        elif len(chunks) > 1:
+            st.write(f"📄 **Text split into {len(chunks)} chunks** (~{chunk_size} chars each)")
     else:
         chunks = [text]
     

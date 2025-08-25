@@ -30,7 +30,7 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 
 ### 1. Github 계정 및 Github Codespaces 설정
 
-1. [https://github.com/](https://github.com/) 접속, 우상단 **`Sign up`** 클릭
+1. **새로운 탭 혹은 창에서** [https://github.com/](https://github.com/) 접속, 우상단 **`Sign up`** 클릭
 2. **`Continue with Google`** 선택 혹은 정보 입력 후 **`Create account`** 선택 및 로그인
 3. 이 저장소를 **자신의 github 저장소로 fork:**
 ![Alt text](./assets/Fork.png)
@@ -50,7 +50,7 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 ---
 ### 2. Neo4j 설정
 
-1. [https://neo4j.com/product/auradb/](https://neo4j.com/product/auradb/)로 이동하여 **`Start Free`** 클릭
+1. **새로운 탭 혹은 창에서** [https://neo4j.com/product/auradb/](https://neo4j.com/product/auradb/)로 이동하여 **`Start Free`** 클릭
 2. **`Continue with Google`** 클릭하고 로그인
 3. 각 단계를 거쳐 필요한 정보를 입력
 4. **`Create instance`** 클릭
@@ -63,7 +63,7 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 ---
 ### 3. OpenRouter API 키 가져오기
 
-1. [https://openrouter.ai/](https://openrouter.ai/)에서 github으로 로그인
+1. **새로운 탭 혹은 창에서** [https://openrouter.ai/](https://openrouter.ai/)에서 github으로 로그인
 2. **`Authorize OpenRouterTeam`** 클릭
 3. 우측 상단 아이콘을 클릭하고 **`Keys`** 클릭
 ![Alt text](./assets/openrouter_1.png)
