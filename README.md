@@ -1,7 +1,7 @@
 # COVID-19 지식 그래프 생성기
 
 **`LangChain`** 과 **`Google Gemini`** API를 사용하여 텍스트 입력에서 그래프 데이터(엔티티 및 관계)를 추출하고, 그래프 정보를 **`Neo4j`** GraphDB에 저장하며 인터랙티브 그래프를 시각화하는 **`Streamlit`** 애플리케이션입니다.
-![CleanShot 2025-05-28 at 13 11 46](https://github.com/user-attachments/assets/4fef9158-8dd8-432d-bb8a-b53953a82c6c)
+![Alt text](./assets/streamlit_example.png)
 
 👉 이 저장소는 Thu Vu의 [Youtube 튜토리얼](https://www.youtube.com/watch?v=O-T_6KOXML4)과 [github 저장소](https://github.com/thu-vu92/knowledge-graph-llms)를 기반으로 만들어졌습니다:
 
