@@ -52,6 +52,8 @@ system_prompt = (
     "like 'mathematician' or 'scientist'."
     "- **Node IDs**: Never utilize integers as node IDs. Node IDs should be "
     "names or human-readable identifiers found in the text.\n"
+    "DO NOT use generic terms like 'Gene', 'Protein', 'Metabolism', 'Disease', 'Upregulated gene' etc. for Node IDs.\n"
+    "Use specific names or identifiers from the text, such as 'BRCA1', 'Diabetes', etc.\n"
     "- **Relationships** represent connections between entities or concepts.\n"
     "Ensure consistency and generality in relationship types when constructing "
     "knowledge graphs. Instead of using specific and momentary types "
@@ -90,14 +92,17 @@ def get_final_prompt(
 def create_graph_transformer():
     """Create a new graph transformer instance for each request."""
     llm = create_llm_instance()
-    my_prompt = get_final_prompt()
+    additional_prompt = """
+    DO NOT use generic terms like 'Gene', 'Protein', 'Metabolism', 'Disease', 'Upregulated gene' etc. for Node IDs.
+    Use specific names or identifiers from the text, such as 'BRCA1', 'Diabetes', etc.
+    """
+    my_prompt = get_final_prompt(additional_instructions=additional_prompt)
     
     return LLMGraphTransformer(
         llm=llm,
         allowed_nodes=BIOMEDICAL_ENTITIES,
         allowed_relationships=BIOMEDICAL_RELATIONSHIPS,
-        prompt=my_prompt,
-        additional_instructions="Do NOT extract author information or references, Countries etc. Only extract biomedical entities and relationships."
+        prompt=my_prompt
     )
 
 # Initialize text splitter for chunking long documents
