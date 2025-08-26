@@ -9,6 +9,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 import os
 import asyncio
+import threading
 from kg_config import EXTRACTION_CONFIG, BIOMEDICAL_ENTITIES, BIOMEDICAL_RELATIONSHIPS
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -21,18 +22,22 @@ neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
 neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
 neo4j_password = os.getenv("NEO4J_PASSWORD", "password")
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    temperature=0,
-    google_api_key=api_key
-)
+def create_llm_instance():
+    """Create a new LLM instance for each request to avoid connection issues."""
+    return ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+        temperature=0,
+        google_api_key=api_key
+    )
 
-# LLMGraphTransformer의 기본 시스템 프롬프트
+# LLMGraphTransformer의 시스템 프롬프트
 system_prompt = (
     "# Knowledge Graph Instructions for GPT-4\n"
     "## 1. Overview\n"
     "You are a top-tier algorithm designed for extracting information in structured "
     "formats to build a knowledge graph.\n"
+    "You are also an expert in biomedical domain knowledge.\n"
+    "You have the ability to understand and reason what entities and relationships are important."
     "Try to capture as much information from the text as possible without "
     "sacrificing accuracy. Do not add any information that is not explicitly "
     "mentioned in the text.\n"
@@ -82,15 +87,18 @@ def get_final_prompt(
         ]
     )
 
-my_prompt = get_final_prompt()
-
-
-graph_transformer = LLMGraphTransformer(llm=llm,
-    allowed_nodes=BIOMEDICAL_ENTITIES,
-    allowed_relationships=BIOMEDICAL_RELATIONSHIPS,
-    prompt=my_prompt,
-    additional_instructions="Do NOT extract author information or references, Countries etc. Only extract biomedical entities and relationships."
-)
+def create_graph_transformer():
+    """Create a new graph transformer instance for each request."""
+    llm = create_llm_instance()
+    my_prompt = get_final_prompt()
+    
+    return LLMGraphTransformer(
+        llm=llm,
+        allowed_nodes=BIOMEDICAL_ENTITIES,
+        allowed_relationships=BIOMEDICAL_RELATIONSHIPS,
+        prompt=my_prompt,
+        additional_instructions="Do NOT extract author information or references, Countries etc. Only extract biomedical entities and relationships."
+    )
 
 # Initialize text splitter for chunking long documents
 text_splitter = RecursiveCharacterTextSplitter(
@@ -103,10 +111,36 @@ text_splitter = RecursiveCharacterTextSplitter(
 
 neo4j_graph = None  # Global variable to hold Neo4j connection
 
+def _run_async_in_thread(coro):
+    """Run an async function in a separate thread with its own event loop."""
+    result = {}
+    exception = {}
+    
+    def thread_target():
+        try:
+            # Create a new event loop for this thread
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                result['value'] = loop.run_until_complete(coro)
+            finally:
+                loop.close()
+        except Exception as e:
+            exception['error'] = e
+    
+    # Run in a separate thread
+    thread = threading.Thread(target=thread_target)
+    thread.start()
+    thread.join()
+    
+    if 'error' in exception:
+        raise exception['error']
+    return result.get('value', [])
+
 # Extract graph data from input text
-async def extract_graph_data(text):
+def extract_graph_data(text):
     """
-    Asynchronously extracts graph data from input text using a graph transformer.
+    Extracts graph data from input text using a graph transformer.
     Automatically chunks long text to ensure better processing.
 
     Args:
@@ -161,7 +195,13 @@ async def extract_graph_data(text):
         if len(chunks) > 0:
             st.write(f"🔬 **Processing {len(documents)} document chunks...**")
         
-        graph_documents = await graph_transformer.aconvert_to_graph_documents(documents)
+        # Create a fresh graph transformer instance for this request
+        transformer = create_graph_transformer()
+        
+        # Run async operation in a separate thread with fresh event loop
+        graph_documents = _run_async_in_thread(
+            transformer.aconvert_to_graph_documents(documents)
+        )
         return graph_documents
         
     except Exception as e:
@@ -286,7 +326,7 @@ def generate_knowledge_graph(text, document_name=None, store_in_neo4j=True):
     """
     Generates and visualizes a knowledge graph from input text.
 
-    This function runs the graph extraction asynchronously, optionally stores
+    This function extracts the graph data, optionally stores
     the graph in Neo4j, and visualizes the resulting graph using PyVis.
 
     Args:
@@ -297,7 +337,7 @@ def generate_knowledge_graph(text, document_name=None, store_in_neo4j=True):
     Returns:
         pyvis.network.Network: The visualized network graph object.
     """
-    graph_documents = asyncio.run(extract_graph_data(text))
+    graph_documents = extract_graph_data(text)
     
     # Store in Neo4j if requested
     if store_in_neo4j and graph_documents:
