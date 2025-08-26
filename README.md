@@ -1,6 +1,6 @@
 # COVID-19 지식 그래프 생성기
 
-**`LangChain`** 과 **`OpenRouter`** API를 사용하여 텍스트 입력에서 그래프 데이터(엔티티 및 관계)를 추출하고, 그래프 정보를 **`Neo4j`** GraphDB에 저장하며 인터랙티브 그래프를 시각화하는 **`Streamlit`** 애플리케이션입니다.
+**`LangChain`** 과 **`Google Gemini`** API를 사용하여 텍스트 입력에서 그래프 데이터(엔티티 및 관계)를 추출하고, 그래프 정보를 **`Neo4j`** GraphDB에 저장하며 인터랙티브 그래프를 시각화하는 **`Streamlit`** 애플리케이션입니다.
 ![CleanShot 2025-05-28 at 13 11 46](https://github.com/user-attachments/assets/4fef9158-8dd8-432d-bb8a-b53953a82c6c)
 
 👉 이 저장소는 Thu Vu의 [Youtube 튜토리얼](https://www.youtube.com/watch?v=O-T_6KOXML4)과 [github 저장소](https://github.com/thu-vu92/knowledge-graph-llms)를 기반으로 만들어졌습니다:
@@ -17,14 +17,14 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 - 두 가지 입력 방법: 텍스트 업로드(.txt 파일) 또는 직접 텍스트 입력
 - 인터랙티브 지식 그래프 시각화
 - 물리 기반 레이아웃을 통한 사용자 정의 가능한 그래프 표시
-- OpenRouter API에서 제공하는 LLM을 활용한 엔티티 관계 추출
+- Google Gemini API를 활용한 엔티티 관계 추출
 - Neo4j DB에 엔티티, 관계 저장
 
 ### 필수 요구사항
 
 - **`Github`** 계정 및 **`Github Codespaces`** 세팅
 - **`Neo4j`** 설정
-- **`OpenRouter`** API 키
+- **`Google Gemini`** API 키
 
 ## 설정
 
@@ -52,7 +52,7 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 
 1. **새로운 탭 혹은 창에서** [https://neo4j.com/product/auradb/](https://neo4j.com/product/auradb/)로 이동하여 **`Start Free`** 클릭
 2. **`Continue with Google`** 클릭하고 로그인
-3. 각 단계를 거쳐 필요한 정보를 입력
+3. 각 단계를 거쳐 필요한 정보 입력: **마구잡이로 입력해도 됩니다.**
 4. **`Create instance`** 클릭
 5. **`Download to Continue`** 클릭
 ![Alt text](./assets/neo4j_setup.png)
@@ -61,18 +61,24 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 7. 페이지 로딩 완료 시 **`Dashboards`** 클릭 후 Dashboard를 Instance와 연결하기
 ![Alt text](./assets/connect_dashboard.png)
 ---
-### 3. OpenRouter API 키 가져오기
+### 3. Google Gemini API 키 가져오기
 
-1. **새로운 탭 혹은 창에서** [https://openrouter.ai/](https://openrouter.ai/)에서 github으로 로그인
-2. **`Authorize OpenRouterTeam`** 클릭
-3. 우측 상단 아이콘을 클릭하고 **`Keys`** 클릭
-![Alt text](./assets/openrouter_1.png)
-4. **`Create API Key`** 클릭
-![Alt text](./assets/CreateAPIKey.png)
-5. 이름을 입력하고 **`credit limit`** 을 0으로 설정한 후 **`Create`** 클릭
-![Alt text](./assets/createapikey_2.png) 
-6. API 키를 복사하여 **쉽게 접근할 수 있는 곳에 저장하고 다른 사람과 공유하지 마십시오.**
-![Alt text](./assets/saveapikey.png)
+1. Google API를 생성하기 위해 **새로운 탭 혹은 창에서** [**`Google Cloud Console`**](https://console.cloud.google.com/?authuser=2)을 열고 Project를 생성해야 합니다.
+![Alt text](./assets/console_start.png)
+![Alt text](./assets/console_make_project.png)
+2. **새로운 탭 혹은 창에서** [https://aistudio.google.com/](https://aistudio.google.com/)로 이동, 우측 상단에 **`Get started`** 클릭
+![Alt text](./assets/get_started_ai_studio.png)
+3. 좌하단 혹은 우상단의 **`Get API key`** 클릭
+![Alt text](./assets/get_api_key_1.png)
+4. 우상단의 **`+ API 키 만들기`** 클릭
+![Alt text](./assets/get_api_key_2.png)
+5. **`기존 프로젝트에 API 키 만들기`** 선택
+![Alt text](./assets/get_api_key_3.png)
+6. 생성된 API Key 안전한 곳에 복사하여 **쉽게 접근할 수 있는 곳에 저장하고 다른 사람과 공유하지 마십시오.**
+![Alt text](./assets/get_api_key_4.png)
+
+> **주의:** Google Gemini API Gemini Flash 2.5 모델 사용 시 무료 할당량으로 분당 10회, 일일 250회 요청 제한이 있습니다.
+> **참고:** Google에서 무료로 90일간 제공하는 $300 달러 크레딧을 이용할 수 있습니다. 관심 있으신 분은 실습 종료 후에 이용 바랍니다.
 ---
 ## 설치
 **의존성(패키지를 실행시키기 위한 패키지) 설치**를 위해 **`uv`** 사용을 권장합니다. **`uv`** 를 설치하고 가상 환경을 활성화하십시오.  
@@ -93,7 +99,7 @@ source .venv/bin/activate
 
 - **`langchain (>= 0.1.0)`**: 핵심 LLM 프레임워크
 - **`langchain-experimental (>= 0.0.45)`**: 실험적 LangChain 기능
-- **`langchain-openai (>= 0.1.0)`**: LangChain용 OpenAI 통합
+- **`langchain-google-genai (>= 0.1.0)`**: LangChain용 Google Gemini 통합
 - **`langchain-neo4j`**: LangChain용 Neo4j 통합
 - **`python-dotenv (>= 1.0.0)`**: 환경 변수 지원
 - **`pyvis (>= 0.3.2)`**: 그래프 시각화
@@ -105,11 +111,11 @@ source .venv/bin/activate
 uv pip install -r requirements.txt
 ```
 ---
-### OpenRouter API Key와 Neo4j 자격 증명
+### Google Gemini API Key와 Neo4j 자격 증명
 
-**루트 디렉토리**에 **`OpenRouter API`** 키, **`Neo4j`** uri 및 자격 증명이 포함된 **`.env`** **파일을 생성하세요:**
+**루트 디렉토리**에 **`Google Gemini API`** 키, **`Neo4j`** uri 및 자격 증명이 포함된 **`.env`** **파일을 생성하세요:**
 ```
-OPENROUTER_API_KEY=your_openai_api_key_here
+GOOGLE_API_KEY=your_google_api_key_here
 NEO4J_URI=your_neo4j_url_here
 NEO4J_USERNAME=your_neo4j_username_here
 NEO4J_PASSWORD=your_neo4j_password_here
@@ -141,10 +147,11 @@ streamlit run app.py
 
 ## 작동 원리
 
-이 애플리케이션은 **`OpenRouter API`** 를 통해 다양한 LLM 모델에 접근하고, **`LangChain`** 의 LLMGraphTransformer를 사용하여 텍스트에서 지식 그래프를 생성합니다:
+이 애플리케이션은 **`Google Gemini API`** 를 통해 Gemini-2.5-Flash 모델에 접근하고, **`LangChain`** 의 LLMGraphTransformer를 사용하여 텍스트에서 지식 그래프를 생성합니다:
 
 ### 1. 텍스트 처리 및 엔터티 추출
-- **`OpenRouter API`** 를 통해 Microsoft의 모델 등 다양한 LLM에 접근
+- **`Google Gemini API`** 를 통해 Gemini-2.5-Flash 모델에 접근
+- API 제한 준수를 위한 자동 청크 제한 (분당 10회 요청 제한)
 - **`LLMGraphTransformer`** 가 입력 텍스트를 분석하여 엔터티(인물, 조직, 장소, 개념 등)를 식별
 - 엔터티 간의 의미적 관계를 추출하여 구조화된 그래프 데이터로 변환
 
