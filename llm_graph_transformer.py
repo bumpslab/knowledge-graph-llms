@@ -599,7 +599,7 @@ def _format_nodes(nodes: List[Node]) -> List[Node]:
     return [
         Node(
             id=el.id.title() if isinstance(el.id, str) else el.id,
-            type=el.type.capitalize()  # type: ignore[arg-type]
+            type=el.type # type: ignore[arg-type]
             if el.type
             else DEFAULT_NODE_TYPE,  # handle empty strings  # type: ignore[arg-type]
             properties=el.properties,
@@ -723,7 +723,7 @@ class LLMGraphTransformer:
     Args:
         llm (BaseLanguageModel): An instance of a language model supporting structured
           output.
-        allowed_nodes (List[str], optional): Specifies which node types are
+        allowed_nodes (List[str] | List[Tuple[str, str, str], optional): Specifies which node types are
           allowed in the graph. Defaults to an empty list, allowing all node types.
         allowed_relationships (List[str], optional): Specifies which relationship types
           are allowed in the graph. Defaults to an empty list, allowing all relationship
@@ -1057,7 +1057,7 @@ class LLMGraphTransformer:
                 await asyncio.sleep(delay)
             
             # Process documents in smaller batches to avoid overwhelming the API
-            batch_size = min(5, len(failed_documents))  # Process max 5 documents at a time
+            batch_size = min(10, len(failed_documents))  # Process max 10 documents at a time
             current_batch = failed_documents[:batch_size]
             remaining_documents = failed_documents[batch_size:]
             
