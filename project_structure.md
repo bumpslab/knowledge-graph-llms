@@ -54,12 +54,6 @@ knowledge-graph-llms/
   - `get_accumulated_graph_visualization()`: 누적 그래프 조회
 - **외부 API 통합**: Google Gemini API를 통한 LLM 접근
 
-### 새로운 모듈 파일들
-
-#### `biomedical_kg_extractor.py`
-- **역할**: 생의학 분야 특화 지식 그래프 추출기
-- **기능**: 의료/생명과학 논문에서 특화된 엔티티 및 관계 추출
-
 #### `kg_config.py`
 - **역할**: 지식 그래프 설정 및 구성 관리
 - **기능**: LLM 모델 설정, 추출 파라미터 관리
@@ -68,17 +62,9 @@ knowledge-graph-llms/
 - **역할**: LLM을 통한 그래프 변환 로직
 - **기능**: 텍스트를 구조화된 그래프 데이터로 변환
 
-#### `neo4j_graph.py`
-- **역할**: Neo4j 그래프 데이터베이스 전용 관리 모듈
-- **기능**: Neo4j 연결, 쿼리, 데이터 저장/조회 최적화
-
-#### `run_kg_extraction.py`
-- **역할**: 배치 처리용 지식 그래프 추출 스크립트
-- **기능**: 대량 문서 처리, 자동화된 추출 파이프라인
-
 #### `sample_papers.py`
-- **역할**: 샘플 논문 데이터 관리
-- **기능**: 테스트용 논문 로딩, 전처리, 샘플 데이터 제공
+- **역할**: biorxiv_filtered.csv 파일에서 논문 데이터 추출하여 .txt로 변환
+- **기능**: 테스트용 논문 로딩, 전처리, 샘플 데이터 제공, 
 
 ### 데이터 및 리소스
 
@@ -96,10 +82,6 @@ knowledge-graph-llms/
 #### `README.md`
 - 프로젝트 전체 개요 및 설치/실행 가이드 (한국어)
 - GitHub Codespaces, Neo4j, Google Gemini API 설정 가이드
-
-#### `CLAUDE.md`
-- Claude Code AI 어시스턴트를 위한 작업 지침서
-- 프로젝트 아키텍처, 개발 명령어, 기술적 세부사항
 
 #### `building_qa_app.md`
 - **새로운 기능**: QA(질의응답) 애플리케이션 구축 가이드
@@ -173,27 +155,3 @@ knowledge-graph-llms/
 - **Backend**: LangChain + Google Gemini API (LLM 통합)
 - **Database**: Neo4j (그래프 데이터베이스)
 - **Visualization**: PyVis (네트워크 시각화)
-- **Development**: Jupyter Notebook (프로토타이핑)
-- **Deployment**: 환경 변수 기반 설정 관리
-- **Data Processing**: 생의학 논문 특화 처리 파이프라인
-
-## 주요 변경사항
-
-### 아키텍처 개선
-- **모듈화**: 단일 파일에서 기능별 모듈로 분리
-- **특화 모듈**: 생의학 분야 특화 추출기 추가
-- **설정 관리**: 별도 설정 모듈로 구성 관리 개선
-
-### API 변경
-- **OpenRouter → Google Gemini**: 더 안정적인 Google Gemini API로 변경
-- **Gemini 2.5 Flash**: 최신 모델 활용으로 성능 향상
-
-### 데이터 처리 강화
-- **샘플 데이터**: COVID-19 논문 4편 추가
-- **배치 처리**: 대량 문서 처리를 위한 스크립트 추가
-- **데이터셋**: bioRxiv 필터링된 데이터셋 포함
-
-### 문서화 확장
-- **QA 앱 가이드**: 질의응답 시스템 구축 가이드 추가
-- **실습 가이드**: vibe.example.md를 통한 개발 예제 제공
-- **구조 설명**: 상세한 프로젝트 구조 문서화
