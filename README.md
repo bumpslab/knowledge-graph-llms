@@ -39,7 +39,7 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 5. fork한 저장소를 이용하여 codespace 생성
 ![Alt text](./assets/create_new_codespace.png)
 
-6. 다음과 같은 화면이 나올 시 정상적으로 완료된 상태
+6. 다음과 같은 화면이 나올 시 정상적으로 완료된 상태 
 ![Alt text](./assets/example_screen.png)
 
 > **참고:**   
