@@ -58,8 +58,9 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 ![Alt text](./assets/neo4j_setup.png)
 6. .txt 파일이 **`Downloads`** 디렉토리에 있는지, 다음과 같은 정보를 포함하는지 확인
 ![Alt text](./assets/neo4j_credentials.png)
-7. 페이지 로딩 완료 시 **`Dashboards`** 클릭 후 Dashboard를 Instance와 연결하기
-![Alt text](./assets/connect_dashboard.png)
+
+페이지 로딩에 시간이 걸리니 다음 단계로 계속 진행하시면 됩니다.
+
 ---
 ### 3. Google Gemini API 키 가져오기
 
@@ -77,8 +78,8 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 6. 생성된 API Key 안전한 곳에 복사하여 **쉽게 접근할 수 있는 곳에 저장하고 다른 사람과 공유하지 마십시오.**
 ![Alt text](./assets/get_api_key_4.png)
 
-> **주의:** Google Gemini API Gemini Flash 2.5 모델 사용 시 무료 할당량으로 분당 10회, 일일 250회 요청 제한이 있습니다.
-> **참고:** Google에서 무료로 90일간 제공하는 $300 달러 크레딧을 이용할 수 있습니다. 관심 있으신 분은 실습 종료 후에 이용 바랍니다.
+> **주의:** Google Gemini API Gemini Flash 2.5 모델 사용 시 무료 할당량으로 분당 10회, 일일 250회 요청 제한이 있습니다.  
+> **참고:** [Google Cloud](https://cloud.google.com/free?hl=ko&_gl=1*1km53bs*_ga*MTc0NDIwOTA4NC4xNzUyNDUwOTIx*_ga_WH2QY8WWF5*czE3NTYyNjQ4NzYkbzEyJGcwJHQxNzU2MjY0ODc2JGo2MCRsMCRoMA..)에서 무료로 90일간 제공하는 $300 달러 크레딧을 이용할 수 있습니다. 관심 있으신 분은 실습 이후에 이용 바랍니다.
 ---
 ## 설치
 **의존성(패키지를 실행시키기 위한 패키지) 설치**를 위해 **`uv`** 사용을 권장합니다. **`uv`** 를 설치하고 가상 환경을 활성화하십시오.  
@@ -145,6 +146,12 @@ streamlit run app.py
    - 마우스 휠을 사용하여 확대/축소
    - 특정 노드와 엣지에 대해 그래프 필터링
 
+### Neo4j 콘솔에서 지식 그래프 생성 결과 확인
+1. Neo4j aura console에서 **`Dashboards`** 클릭 후 Dashboard를 Instance와 연결하기
+![Alt text](./assets/connect_dashboard.png)
+
+2. Cypher text
+
 ## 작동 원리
 
 이 애플리케이션은 **`Google Gemini API`** 를 통해 Gemini-2.5-Flash 모델에 접근하고, **`LangChain`** 의 LLMGraphTransformer를 사용하여 텍스트에서 지식 그래프를 생성합니다:
@@ -174,4 +181,8 @@ streamlit run app.py
 
 이 프로젝트는 MIT 라이선스 하에 라이선스됩니다 - 소프트웨어의 자유로운 사용, 수정 및 배포를 허용하는 허용적 오픈 소스 라이선스입니다.
 
-자세한 내용은 [MIT 라이선스](https://opensource.org/licenses/MIT) 문서를 참조하세요.
+자세한 내용은 [MIT 라이선스](https://opensource.org/licenses/MIT) 문서를 참조하세요.  
+
+## 연락처
+추가로 궁금한 사항이 있으시다면 **`bspark@insilicogen.com`** 이메일로 말씀해주시면 최대한 답변해드리겠습니다.  
+편하게 연락주세요🤗
