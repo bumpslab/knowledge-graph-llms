@@ -161,8 +161,3 @@ EXTRACTION_CONFIG = {
     "chunk_size": 1500,  # Max characters per document chunk
     "overlap": 200  # Overlap between chunks
 }
-
-# allowed_nodes=["ViralStrain","ViralGene","HumanGene","CellType","TissueType","OrganSystem","Symptom","ClinicalOutcome",
-#     "Drug","DrugClass","Vaccine","TreatmentProtocol","RiskFactor","GeneVariant","Pathology","BiologicalProcess"],
-# allowed_relationships=["UPREGULATES", "DOWNREGULATES", "HAS_POSITIVE_CORRELATION_WITH", "HAS_NEGATIVE_CORRELATION_WITH",
-# "INTERACTS_WITH","IS_EXPRESSED_IN", "IS_RISK_FACTOR_FOR", "TREATS", "PREVENTS"]
