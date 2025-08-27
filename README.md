@@ -159,7 +159,7 @@ streamlit run app.py
 ## 코드 고도화
 
 1. Github Copilot을 이용해 코드베이스에 대해 질문해보고 기능들에 대해 구체적으로 이해해보세요.[어플리케이션 작동 원리](#어플리케이션-작동-원리)와 [project_structure.md](./project_structure.md)에서도 간략히 확인 가능합니다.
-2. 이 저장소의 **`vibe.example.md`**를 참고해서 코드를 고도화해봅시다.  
+2. 이 저장소의 **`vibe.example.md`** 를 참고해서 코드를 고도화해봅시다.  
    > 꼭 예제의 흐름대로 가지 않으셔도 됩니다. 자유롭게 시도해보세요.
 3. 코드 수정 및 고도화를 진행해보면서 버전관리를 같이 진행해보세요.
    > **기본 git 개념과 git 명령어들을 학습해보세요.**  
@@ -171,7 +171,7 @@ streamlit run app.py
 
 ## 어플리케이션 작동 원리
 
-이 애플리케이션은 **`Google Gemini API`** 를 통해 **`Gemini-2.5-Flash`**모델에 접근하고, **`LangChain`** 의 **`LLMGraphTransformer`**를 사용하여 텍스트에서 지식 그래프를 생성합니다:
+이 애플리케이션은 **`Google Gemini API`** 를 통해 **`Gemini-2.5-Flash`** 모델에 접근하고, **`LangChain`** 의 **`LLMGraphTransformer`** 를 사용하여 텍스트에서 지식 그래프를 생성합니다:
 
 ### 1. 텍스트 처리 및 엔터티 추출
 - **`Google Gemini API`** 를 통해 Gemini-2.5-Flash 모델에 접근
