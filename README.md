@@ -162,12 +162,12 @@ streamlit run app.py
 2. 이 저장소의 **`vibe.example.md`**를 참고해서 코드를 고도화해봅시다.  
    > 꼭 예제의 흐름대로 가지 않으셔도 됩니다. 자유롭게 시도해보세요.
 3. 코드 수정 및 고도화를 진행해보면서 버전관리를 같이 진행해보세요.
-   > **기본 git 개념과 git 명령어들을 학습해보세요.**
-   > **`git add`**, **`git commit`**, **`git push`** : 변경사항 반영 관련 명령어  
-   > **`git status`**,**`git log`**, **`git config`** : 상태 확인 관련 명령어  
-   > **`git branch`**, **`git switch`**, **`git checkout`**, **`git reset`** : 버전 생성 및 변경, 이동 관련 명령어  
-   > **`git merge`**, **`git rebase`** : 버전 병합 관련 명령어  
-   > **`git clone`**, **`git fetch`**, **`git pull`** : 원격 저장소 불러오기 관련 명령어   
+   > **기본 git 개념과 git 명령어들을 학습해보세요.**  
+   > **`git add`**, **`git commit`**, **`git push`** : **변경사항 반영** 관련 명령어  
+   > **`git status`**,**`git log`**, **`git config`** : **상태 확인** 관련 명령어  
+   > **`git branch`**, **`git switch`**, **`git checkout`**, **`git reset`** : **버전 생성 및 변경, 이동** 관련 명령어  
+   > **`git merge`**, **`git rebase`** : **버전 병합** 관련 명령어  
+   > **`git clone`**, **`git fetch`**, **`git pull`** : **원격 저장소 불러오기** 관련 명령어   
 
 ## 어플리케이션 작동 원리
 
