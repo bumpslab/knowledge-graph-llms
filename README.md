@@ -15,10 +15,10 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 텍스트에서 그래프 데이터 추출, Graph DB에 데이터 저장, Streamlit UI 이용한 시각화
 
 - 두 가지 입력 방법: 텍스트 업로드(.txt 파일) 또는 직접 텍스트 입력
-- 인터랙티브 지식 그래프 시각화
-- 물리 기반 레이아웃을 통한 사용자 정의 가능한 그래프 표시
 - Google Gemini API를 활용한 엔티티 관계 추출
 - Neo4j DB에 엔티티, 관계 저장
+- 인터랙티브 지식 그래프 시각화
+- 물리 기반 레이아웃을 통한 사용자 정의 가능한 그래프 표시
 
 ### 필수 요구사항
 
@@ -78,9 +78,9 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 6. 생성된 API Key 안전한 곳에 복사하여 **쉽게 접근할 수 있는 곳에 저장하고 다른 사람과 공유하지 마십시오.**
 ![Alt text](./assets/get_api_key_4.png)
 
-> **주의:** Google Gemini API Gemini Flash 2.5 모델 사용 시 무료 할당량으로 분당 10회, 일일 250회 요청 제한이 있습니다.  
+> **주의:** Google Gemini API로 Gemini Flash 2.5 모델 사용 시 무료 할당량으로 분당 10회, 일일 250회 요청 제한이 있습니다.  
 > **참고:** [Google Cloud](https://cloud.google.com/free?hl=ko&_gl=1*1km53bs*_ga*MTc0NDIwOTA4NC4xNzUyNDUwOTIx*_ga_WH2QY8WWF5*czE3NTYyNjQ4NzYkbzEyJGcwJHQxNzU2MjY0ODc2JGo2MCRsMCRoMA..)에서 무료로 90일간 제공하는 $300 크레딧을 이용할 수 있습니다. 관심 있으신 분은 실습 이후에 이용 바랍니다.  
-추가적으로 대학(원)생 분들은 10월 6일까지 [여기](https://gemini.google/students/?hl=ko)에서 신청하면 Gemini의 Pro버전을 1년간 무료로 사용할 수 있습니다.
+추가적으로 대학(원)생 분들은 2025.10.06까지 [여기](https://gemini.google/students/?hl=ko)에서 신청하면 **Gemini의 Pro 버전을 1년간 무료**로 사용할 수 있습니다.
 ---
 ## 설치
 **의존성(패키지를 실행시키기 위한 패키지) 설치**를 위해 **`uv`** 사용을 권장합니다. **`uv`** 를 설치하고 가상 환경을 활성화하십시오.  
@@ -136,12 +136,12 @@ streamlit run app.py
 
 ## 사용법
 
-1. 사이드바에서 입력 방법을 선택하세요 (txt 업로드 또는 텍스트 입력)
-2. 파일을 업로드하는 경우 컴퓨터에서 .txt 파일을 선택하세요
-3. 직접 입력을 사용하는 경우 텍스트 영역에 텍스트를 입력하거나 붙여넣기 하세요
-4. "Generate Knowledge Graph" 버튼을 클릭하세요
-5. 그래프가 생성될 때까지 기다리세요 (텍스트 길이에 따라 몇 분 정도 소요될 수 있습니다)
-6. 인터랙티브 지식 그래프를 탐색하세요:
+1. 사이드바에서 입력 방법을 선택하기 (txt 업로드 또는 텍스트 입력)
+2. 파일을 업로드하는 경우 컴퓨터에서 .txt 파일을 선택하기
+3. 직접 입력을 사용하는 경우 텍스트 영역에 텍스트를 입력하거나 붙여넣기
+4. "Generate Knowledge Graph" 버튼을 클릭하기
+5. 그래프가 생성될 때까지 기다리기 (텍스트 길이에 따라 몇 분 정도 소요될 수 있습니다)
+6. 인터랙티브 지식 그래프를 탐색하기:
    - 노드를 드래그하여 그래프를 재배치
    - 노드와 엣지에 마우스를 올려 추가 정보 확인
    - 마우스 휠을 사용하여 확대/축소
@@ -151,14 +151,27 @@ streamlit run app.py
 1. Neo4j aura console에서 **`Dashboards`** 클릭 후 Dashboard를 Instance와 연결하기
 ![Alt text](./assets/connect_dashboard.png)
 
-2. Cypher text query를 이용해서 DB에서 노드 쿼리 하기 (공식 문서 참조)[https://neo4j.com/docs/cypher-manual/current/introduction/]
+2. Cypher text query를 이용해서 DB에서 노드 쿼리 하기 [공식 문서 참조](https://neo4j.com/docs/cypher-manual/current/introduction/)
 ![Alt text](./assets/Neo4j_query_example.png)
 
-> **참고:** GPT등 LLM에게 물어봐도 되고 Neo4j에서도 LLM을 이용해 자연어 쿼리를 Cypher text query로 바꿔주는 기능을 제공합니다.(공식 문서 참조)[https://neo4j.com/labs/neodash/2.4/user-guide/extensions/natural-language-queries/]
+> **참고:** GPT등 LLM에게 물어봐도 되고 Neo4j에서도 LLM을 이용해 자연어 쿼리를 Cypher text 쿼리로 바꿔주는 기능을 제공합니다.[공식 문서 참조](https://neo4j.com/labs/neodash/2.4/user-guide/extensions/natural-language-queries/)
 
-## 작동 원리
+## 코드 고도화
 
-이 애플리케이션은 **`Google Gemini API`** 를 통해 Gemini-2.5-Flash 모델에 접근하고, **`LangChain`** 의 LLMGraphTransformer를 사용하여 텍스트에서 지식 그래프를 생성합니다:
+1. Github Copilot을 이용해 코드베이스에 대해 질문해보고 기능들에 대해 구체적으로 이해해보세요.[어플리케이션 작동 원리](#어플리케이션-작동-원리)와 [project_structure.md](./project_structure.md)에서도 간략히 확인 가능합니다.
+2. 이 저장소의 **`vibe.example.md`**를 참고해서 코드를 고도화해봅시다.  
+> 꼭 예제의 흐름대로 가지 않으셔도 됩니다. 자유롭게 시도해보세요.
+3. 코드 수정 및 고도화를 진행해보면서 버전관리를 같이 진행해보세요.
+> **기본 git 개념과 git 명령어들을 학습해보세요.**
+> **`git add`**, **`git commit`**, **`git push`** : 변경사항 반영 관련 명령어
+> **`git status`**,**`git log`**, **`git config`** : 상태 확인 관련 명령어
+> **`git branch`**, **`git switch`**, **`git checkout`**, **`git reset`** : 버전 생성 및 변경, 이동 관련 명령어
+> **`git merge`**, **`git rebase`** : 버전 병합 관련 명령어
+> **`git clone`**, **`git fetch`**, **`git pull`** : 원격 저장소 불러오기 관련 명령어
+
+## 어플리케이션 작동 원리
+
+이 애플리케이션은 **`Google Gemini API`** 를 통해 **`Gemini-2.5-Flash`**모델에 접근하고, **`LangChain`** 의 **`LLMGraphTransformer`**를 사용하여 텍스트에서 지식 그래프를 생성합니다:
 
 ### 1. 텍스트 처리 및 엔터티 추출
 - **`Google Gemini API`** 를 통해 Gemini-2.5-Flash 모델에 접근
@@ -182,6 +195,7 @@ streamlit run app.py
 - 문서 간 공통 엔터티 연결을 통한 지식 네트워크 확장
 - 시간에 따른 지식 축적과 관계 발견 지원
 
+
 ## 라이선스
 
 이 프로젝트는 MIT 라이선스 하에 라이선스됩니다 - 소프트웨어의 자유로운 사용, 수정 및 배포를 허용하는 허용적 오픈 소스 라이선스입니다.
@@ -189,5 +203,6 @@ streamlit run app.py
 자세한 내용은 [MIT 라이선스](https://opensource.org/licenses/MIT) 문서를 참조하세요.  
 
 ## 연락처
-추가로 궁금한 사항이 있으시다면 **`bspark@insilicogen.com`** 이메일로 말씀해주시면 최대한 답변해드리겠습니다.  
+**어려운 실습하느라 정말 수고 많으셨습니다!!**
+궁금한 사항이 있으시다면 **`bspark@insilicogen.com`** 이메일로 말씀해주시면 **`2~3 영업일`** 내에 최대한 답변해드리겠습니다.  
 🤗**편하게 연락주세요**🤗
