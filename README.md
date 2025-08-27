@@ -43,9 +43,9 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 ![Alt text](./assets/example_screen.png)
 
 > **참고:**   
-> 자신의 저장소를 이용해서 codespace를 생성하게 되면
-> git clone <my repo url>를 한 것과 동일한 상태로 vscode와 터미널을 사용할 수 있습니다.  
-> codespace를 사용하지 않는다면 터미널에서 git clone <my repo url>을 실행해서 원격 저장소를 로컬로 불러와야 합니다.
+> 자신의 저장소를 이용해서 **`codespace`** 를 생성하게 되면
+> **`git clone`** 을 한 것과 동일한 상태로 **`vscode`** 와 터미널을 사용할 수 있습니다.  
+> codespace를 사용하지 않는다면 터미널에서 **`git clone`** 을 실행해서 원격 저장소를 로컬로 불러와야 합니다.
 
 ---
 ### 2. Neo4j 설정
@@ -79,7 +79,8 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 ![Alt text](./assets/get_api_key_4.png)
 
 > **주의:** Google Gemini API Gemini Flash 2.5 모델 사용 시 무료 할당량으로 분당 10회, 일일 250회 요청 제한이 있습니다.  
-> **참고:** [Google Cloud](https://cloud.google.com/free?hl=ko&_gl=1*1km53bs*_ga*MTc0NDIwOTA4NC4xNzUyNDUwOTIx*_ga_WH2QY8WWF5*czE3NTYyNjQ4NzYkbzEyJGcwJHQxNzU2MjY0ODc2JGo2MCRsMCRoMA..)에서 무료로 90일간 제공하는 $300 달러 크레딧을 이용할 수 있습니다. 관심 있으신 분은 실습 이후에 이용 바랍니다.
+> **참고:** [Google Cloud](https://cloud.google.com/free?hl=ko&_gl=1*1km53bs*_ga*MTc0NDIwOTA4NC4xNzUyNDUwOTIx*_ga_WH2QY8WWF5*czE3NTYyNjQ4NzYkbzEyJGcwJHQxNzU2MjY0ODc2JGo2MCRsMCRoMA..)에서 무료로 90일간 제공하는 $300 크레딧을 이용할 수 있습니다. 관심 있으신 분은 실습 이후에 이용 바랍니다.  
+추가적으로 대학(원)생 분들은 10월 6일까지 [여기](https://gemini.google/students/?hl=ko)에서 신청하면 Gemini의 Pro버전을 1년간 무료로 사용할 수 있습니다.
 ---
 ## 설치
 **의존성(패키지를 실행시키기 위한 패키지) 설치**를 위해 **`uv`** 사용을 권장합니다. **`uv`** 를 설치하고 가상 환경을 활성화하십시오.  
@@ -146,11 +147,14 @@ streamlit run app.py
    - 마우스 휠을 사용하여 확대/축소
    - 특정 노드와 엣지에 대해 그래프 필터링
 
-### Neo4j 콘솔에서 지식 그래프 생성 결과 확인
+#### Neo4j 콘솔에서 지식 그래프 생성 결과 확인
 1. Neo4j aura console에서 **`Dashboards`** 클릭 후 Dashboard를 Instance와 연결하기
 ![Alt text](./assets/connect_dashboard.png)
 
-2. Cypher text
+2. Cypher text query를 이용해서 DB에서 노드 쿼리 하기 (공식 문서 참조)[https://neo4j.com/docs/cypher-manual/current/introduction/]
+![Alt text](./assets/Neo4j_query_example.png)
+
+> **참고:** GPT등 LLM에게 물어봐도 되고 Neo4j에서도 LLM을 이용해 자연어 쿼리를 Cypher text query로 바꿔주는 기능을 제공합니다.(공식 문서 참조)[https://neo4j.com/labs/neodash/2.4/user-guide/extensions/natural-language-queries/]
 
 ## 작동 원리
 
@@ -158,7 +162,8 @@ streamlit run app.py
 
 ### 1. 텍스트 처리 및 엔터티 추출
 - **`Google Gemini API`** 를 통해 Gemini-2.5-Flash 모델에 접근
-- API 제한 준수를 위한 자동 청크 제한 (분당 10회 요청 제한)
+- 긴 논문 텍스트를 여러 개의 chunk로 쪼갠 후 병렬적으로 API 요청을 통해 엔티티, 관계 추출 요청
+- API rate 제한 준수를 위한 자동 청크 제한 (분당 10회 요청 제한)
 - **`LLMGraphTransformer`** 가 입력 텍스트를 분석하여 엔터티(인물, 조직, 장소, 개념 등)를 식별
 - 엔터티 간의 의미적 관계를 추출하여 구조화된 그래프 데이터로 변환
 
@@ -185,4 +190,4 @@ streamlit run app.py
 
 ## 연락처
 추가로 궁금한 사항이 있으시다면 **`bspark@insilicogen.com`** 이메일로 말씀해주시면 최대한 답변해드리겠습니다.  
-편하게 연락주세요🤗
+🤗**편하게 연락주세요**🤗
