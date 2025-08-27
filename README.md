@@ -45,7 +45,7 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 > **참고:**   
 > 자신의 저장소를 이용해서 **`codespace`** 를 생성하게 되면
 > **`git clone`** 을 한 것과 동일한 상태로 **`vscode`** 와 터미널을 사용할 수 있습니다.  
-> codespace를 사용하지 않는다면 터미널에서 **`git clone`** 을 실행해서 원격 저장소를 로컬로 불러와야 합니다.
+> **`codespace`** 를 사용하지 않는다면 터미널에서 **`git clone`** 을 실행해서 원격 저장소를 로컬로 불러와야 합니다.
 
 ---
 ### 2. Neo4j 설정
@@ -160,14 +160,14 @@ streamlit run app.py
 
 1. Github Copilot을 이용해 코드베이스에 대해 질문해보고 기능들에 대해 구체적으로 이해해보세요.[어플리케이션 작동 원리](#어플리케이션-작동-원리)와 [project_structure.md](./project_structure.md)에서도 간략히 확인 가능합니다.
 2. 이 저장소의 **`vibe.example.md`**를 참고해서 코드를 고도화해봅시다.  
-> 꼭 예제의 흐름대로 가지 않으셔도 됩니다. 자유롭게 시도해보세요.
+   > 꼭 예제의 흐름대로 가지 않으셔도 됩니다. 자유롭게 시도해보세요.
 3. 코드 수정 및 고도화를 진행해보면서 버전관리를 같이 진행해보세요.
-> **기본 git 개념과 git 명령어들을 학습해보세요.**
-> **`git add`**, **`git commit`**, **`git push`** : 변경사항 반영 관련 명령어
-> **`git status`**,**`git log`**, **`git config`** : 상태 확인 관련 명령어
-> **`git branch`**, **`git switch`**, **`git checkout`**, **`git reset`** : 버전 생성 및 변경, 이동 관련 명령어
-> **`git merge`**, **`git rebase`** : 버전 병합 관련 명령어
-> **`git clone`**, **`git fetch`**, **`git pull`** : 원격 저장소 불러오기 관련 명령어
+   > **기본 git 개념과 git 명령어들을 학습해보세요.**
+   > **`git add`**, **`git commit`**, **`git push`** : 변경사항 반영 관련 명령어  
+   > **`git status`**,**`git log`**, **`git config`** : 상태 확인 관련 명령어  
+   > **`git branch`**, **`git switch`**, **`git checkout`**, **`git reset`** : 버전 생성 및 변경, 이동 관련 명령어  
+   > **`git merge`**, **`git rebase`** : 버전 병합 관련 명령어  
+   > **`git clone`**, **`git fetch`**, **`git pull`** : 원격 저장소 불러오기 관련 명령어   
 
 ## 어플리케이션 작동 원리
 
@@ -204,5 +204,5 @@ streamlit run app.py
 
 ## 연락처
 **어려운 실습하느라 정말 수고 많으셨습니다!!**
-궁금한 사항이 있으시다면 **`bspark@insilicogen.com`** 이메일로 말씀해주시면 **`2~3 영업일`** 내에 최대한 답변해드리겠습니다.  
-🤗**편하게 연락주세요**🤗
+궁금한 사항이 있으시다면 **`bspark@insilicogen.com`**   
+이메일로 말씀해주시면 **`2~3 영업일`** 내에 최대한 답변해드리겠습니다. 🤗**편하게 연락주세요**🤗
