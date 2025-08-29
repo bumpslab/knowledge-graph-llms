@@ -80,40 +80,9 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 추가적으로 대학(원)생 분들은 2025.10.06까지 [여기](https://gemini.google/students/?hl=ko)에서 신청하면 **Gemini의 Pro 버전을 1년간 무료**로 사용할 수 있습니다.
 
 ---
-## 설치
-**의존성(패키지를 실행시키기 위한 패키지) 설치**를 위해 **`uv`** 사용을 권장합니다. **`uv`** 를 설치하고 가상 환경을 활성화하십시오.  
-**`uv`** 설치:
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-가상 환경 생성 및 활성화:
-```
-uv venv 
-source .venv/bin/activate
-```
-
-### 의존성
-
-이 패키지가 작동하기 위해서는 다음 Python 패키지가 설치 되어있어야 합니다.
-
-- **`langchain (>= 0.1.0)`**: 핵심 LLM 프레임워크
-- **`langchain-experimental (>= 0.0.45)`**: 실험적 LangChain 기능
-- **`langchain-google-genai (>= 0.1.0)`**: LangChain용 Google Gemini 통합
-- **`langchain-neo4j`**: LangChain용 Neo4j 통합
-- **`python-dotenv (>= 1.0.0)`**: 환경 변수 지원
-- **`pyvis (>= 0.3.2)`**: 그래프 시각화
-- **`streamlit (>= 1.32.0)`**: 웹 UI 프레임워크
-
-제공된 **`requirements.txt`** 파일을 사용하여 모든 **필수 의존성을 설치하십시오:**
-
-```bash
-uv pip install -r requirements.txt
-```
----
 ### Google Gemini API Key와 Neo4j 자격 증명
 
-**루트 디렉토리**에 **`Google Gemini API`** 키, **`Neo4j`** uri 및 자격 증명이 포함된 **`.env`** **파일을 생성하세요:**
+**루트 디렉토리**에 **`Google Gemini API`** 키, **`Neo4j`** uri 및 자격 증명이 포함된 **`.env`** **파일을 수정하세요:**
 ```
 GOOGLE_API_KEY=your_google_api_key_here
 NEO4J_URI=your_neo4j_url_here
@@ -130,7 +99,8 @@ NEO4J_PASSWORD=your_neo4j_password_here
 streamlit run app.py
 ```
 
-이렇게 하면 애플리케이션이 시작되고 기본 웹 브라우저에서 열립니다(일반적으로 http://localhost:8501).
+이렇게 하면 애플리케이션이 시작됩니다.  
+출력된 링크 주소로 접속해주세요.  
 
 ## 사용법
 
