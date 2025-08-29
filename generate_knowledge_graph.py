@@ -1,37 +1,61 @@
-from llm_graph_transformer import LLMGraphTransformer
+"""Knowledge Graph Generation Module
+
+This module provides functionality to extract entities and relationships from text
+using LangChain's graph transformer and visualize them using PyVis.
+Supports storage in Neo4j database for persistent knowledge graphs.
+"""
+
+# Standard library imports
+import asyncio
+import math
+import os
+import threading
+from datetime import datetime
+
+# Third-party imports
+import streamlit as st
+from dotenv import load_dotenv
 from langchain_core.documents import Document
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_neo4j import Neo4jGraph
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pyvis.network import Network
-from langchain_neo4j import Neo4jGraph
-import streamlit as st
-from datetime import datetime
-from dotenv import load_dotenv
-import os
-import asyncio
-import threading
-from kg_config import EXTRACTION_CONFIG, BIOMEDICAL_ENTITIES, BIOMEDICAL_RELATIONSHIPS
-from langchain_core.prompts import ChatPromptTemplate
 
-# Load the .env file
+# Local imports
+from kg_config import BIOMEDICAL_ENTITIES, BIOMEDICAL_RELATIONSHIPS, EXTRACTION_CONFIG
+from llm_graph_transformer import LLMGraphTransformer
+
+# Load environment variables
 load_dotenv()
-# Get API key from environment variable
-api_key = os.getenv("GOOGLE_API_KEY")
 
-neo4j_uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-neo4j_username = os.getenv("NEO4J_USERNAME", "neo4j")
-neo4j_password = os.getenv("NEO4J_PASSWORD", "password")
+# Environment configuration
+API_KEY = os.getenv("GOOGLE_API_KEY")
+NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+NEO4J_USERNAME = os.getenv("NEO4J_USERNAME", "neo4j")
+NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password")
 
-def create_llm_instance():
-    """Create a new LLM instance for each request to avoid connection issues."""
-    return ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash",
-        temperature=0,
-        google_api_key=api_key
-    )
+# Configuration constants
+MAX_CHUNKS = 10  # Gemini rate limit: 10 requests per minute
+VIZ_HEIGHT = "1200px"
+VIZ_WIDTH = "100%"
+VIZ_BGCOLOR = "#222222"
+VIZ_FONT_COLOR = "white"
 
-# LLMGraphTransformer의 시스템 프롬프트
-system_prompt = (
+# Global variables
+neo4j_graph = None  # Neo4j connection instance
+
+# Initialize text splitter for chunking long documents
+TEXT_SPLITTER = RecursiveCharacterTextSplitter(
+    separators=["\n\n", "\n", ". ", ".", " ", ""],
+    chunk_size=EXTRACTION_CONFIG.get("chunk_size", 1500),
+    chunk_overlap=EXTRACTION_CONFIG.get("overlap", 200),
+    length_function=len,
+    is_separator_regex=False,
+)
+
+# System prompt for LLMGraphTransformer
+SYSTEM_PROMPT = (
     "# Knowledge Graph Instructions for GPT-4\n"
     "## 1. Overview\n"
     "You are a top-tier algorithm designed for extracting information in structured "
@@ -49,7 +73,7 @@ system_prompt = (
     "Ensure you use basic or elementary types for node labels.\n"
     "- For example, when you identify an entity representing a person, "
     "always label it as **'person'**. Avoid using more specific terms "
-    "like 'mathematician' or 'scientist'."
+    "like 'mathematician' or 'scientist'.\n"
     "- **Node IDs**: Never utilize integers as node IDs. Node IDs should be "
     "names or human-readable identifiers found in the text.\n"
     "DO NOT use generic terms like 'Gene', 'Protein', 'Metabolism', 'Disease', 'Upregulated gene' etc. for Node IDs.\n"
@@ -72,50 +96,8 @@ system_prompt = (
     "Adhere to the rules strictly. Non-compliance will result in termination."
 )
 
-def get_final_prompt(
-    additional_instructions: str = "",
-) -> ChatPromptTemplate:
-    return ChatPromptTemplate.from_messages(
-        [
-            ("system", system_prompt),
-            (
-                "human",
-                additional_instructions
-                + " Tip: Make sure to answer in the correct format and do "
-                "not include any explanations. "
-                "Use the given format to extract information from the "
-                "following input: {input}",
-            ),
-        ]
-    )
 
-def create_graph_transformer():
-    """Create a new graph transformer instance for each request."""
-    llm = create_llm_instance()
-    additional_prompt = """
-    DO NOT use generic terms like 'Gene', 'Protein', 'Metabolism', 'Disease', 'Upregulated gene' etc. for Node IDs.
-    Use specific names or identifiers from the text, such as 'BRCA1', 'Diabetes', etc.
-    """
-    my_prompt = get_final_prompt(additional_instructions=additional_prompt)
-    
-    return LLMGraphTransformer(
-        llm=llm,
-        allowed_nodes=BIOMEDICAL_ENTITIES,
-        allowed_relationships=BIOMEDICAL_RELATIONSHIPS,
-        prompt=my_prompt
-    )
-
-# Initialize text splitter for chunking long documents
-text_splitter = RecursiveCharacterTextSplitter(
-    separators=["\n\n", "\n", ". ", ".", " ", ""],
-    chunk_size=EXTRACTION_CONFIG.get("chunk_size", 1500),
-    chunk_overlap=EXTRACTION_CONFIG.get("overlap", 200),
-    length_function=len,
-    is_separator_regex=False,
-)
-
-neo4j_graph = None  # Global variable to hold Neo4j connection
-
+# Utility functions
 def _run_async_in_thread(coro):
     """Run an async function in a separate thread with its own event loop."""
     result = {}
@@ -142,7 +124,72 @@ def _run_async_in_thread(coro):
         raise exception['error']
     return result.get('value', [])
 
-# Extract graph data from input text
+
+# LLM and transformer creation functions
+def create_llm_instance():
+    """Create a new LLM instance for each request to avoid connection issues."""
+    return ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+        temperature=0,
+        google_api_key=API_KEY
+    )
+
+
+def get_final_prompt(additional_instructions: str = "") -> ChatPromptTemplate:
+    """Create the final prompt template for graph extraction."""
+    return ChatPromptTemplate.from_messages(
+        [
+            ("system", SYSTEM_PROMPT),
+            (
+                "human",
+                additional_instructions
+                + " Tip: Make sure to answer in the correct format and do "
+                "not include any explanations. "
+                "Use the given format to extract information from the "
+                "following input: {input}",
+            ),
+        ]
+    )
+
+
+def create_graph_transformer():
+    """Create a new graph transformer instance for each request."""
+    llm = create_llm_instance()
+    additional_prompt = """
+    DO NOT use generic terms like 'Gene', 'Protein', 'Metabolism', 'Disease', 'Upregulated gene' etc. for Node IDs.
+    Use specific names or identifiers from the text, such as 'BRCA1', 'Diabetes', etc.
+    """
+    prompt = get_final_prompt(additional_instructions=additional_prompt)
+    
+    return LLMGraphTransformer(
+        llm=llm,
+        allowed_nodes=BIOMEDICAL_ENTITIES,
+        allowed_relationships=BIOMEDICAL_RELATIONSHIPS,
+        prompt=prompt
+    )
+
+
+# Neo4j connection management
+def get_neo4j_connection():
+    """Get or create Neo4j connection"""
+    global neo4j_graph
+    if neo4j_graph is None:
+        try:
+            st.write("🔗 **Connecting to Neo4j database...**")
+            neo4j_graph = Neo4jGraph(
+                url=NEO4J_URI,
+                username=NEO4J_USERNAME,
+                password=NEO4J_PASSWORD
+            )
+            st.write("✅ **Connected to Neo4j database**")
+        except Exception as e:
+            st.error(f"❌ **Failed to connect to Neo4j:** {str(e)}")
+            st.write("💡 **Make sure Neo4j is running and credentials are correct**")
+            raise e
+    return neo4j_graph
+
+
+# Core processing functions
 def extract_graph_data(text):
     """
     Extracts graph data from input text using a graph transformer.
@@ -156,18 +203,17 @@ def extract_graph_data(text):
     """
     # Get chunk size from config
     chunk_size = EXTRACTION_CONFIG.get("chunk_size", 1500)
-    max_chunks = 10  # Gemini rate limit: 10 requests per minute
     
     # Check if text needs chunking
     if len(text) > chunk_size:
         # Split text into chunks
-        chunks = text_splitter.split_text(text)
+        chunks = TEXT_SPLITTER.split_text(text)
         
         # Limit chunks to respect Gemini rate limits
-        if len(chunks) > max_chunks:
-            st.warning(f"⚠️ **Text would create {len(chunks)} chunks, limiting to {max_chunks} due to API rate limits**")
+        if len(chunks) > MAX_CHUNKS:
+            st.warning(f"⚠️ **Text would create {len(chunks)} chunks, limiting to {MAX_CHUNKS} due to API rate limits**")
             # Calculate new chunk size to fit within limit
-            new_chunk_size = len(text) // max_chunks + 1
+            new_chunk_size = len(text) // MAX_CHUNKS + 1
             temp_splitter = RecursiveCharacterTextSplitter(
                 separators=["\n\n", "\n", ". ", ".", " ", ""],
                 chunk_size=new_chunk_size,
@@ -175,7 +221,7 @@ def extract_graph_data(text):
                 length_function=len,
                 is_separator_regex=False,
             )
-            chunks = temp_splitter.split_text(text)[:max_chunks]
+            chunks = temp_splitter.split_text(text)[:MAX_CHUNKS]
             st.write(f"📄 **Text split into {len(chunks)} chunks** (~{new_chunk_size} chars each)")
         elif len(chunks) > 1:
             st.write(f"📄 **Text split into {len(chunks)} chunks** (~{chunk_size} chars each)")
@@ -214,6 +260,34 @@ def extract_graph_data(text):
         return []
 
 
+def store_graph_in_neo4j(graph_documents, document_name=None):
+    """Store graph documents in Neo4j database"""
+    try:
+        graph = get_neo4j_connection()
+        
+        st.write("💾 **Storing graph data in Neo4j...**")
+        
+        # Add document metadata to nodes if document_name is provided
+        if document_name:
+            for doc in graph_documents:
+                for node in doc.nodes:
+                    if not hasattr(node, 'properties'):
+                        node.properties = {}
+                    node.properties['source_document'] = document_name
+                    node.properties['created_at'] = datetime.now().isoformat()
+        
+        # Store in Neo4j
+        graph.add_graph_documents(graph_documents)
+        
+        st.write("✅ **Graph data stored successfully in Neo4j**")
+        return True
+        
+    except Exception as e:
+        st.error(f"❌ **Error storing graph in Neo4j:** {str(e)}")
+        return False
+
+
+# Visualization functions
 def visualize_graph(graph_documents):
     """
     Visualizes a knowledge graph using PyVis based on the extracted graph documents.
@@ -229,8 +303,16 @@ def visualize_graph(graph_documents):
         return None
     
     # Create network
-    net = Network(height="1200px", width="100%", directed=True,
-                      notebook=False, bgcolor="#222222", font_color="white", filter_menu=True, cdn_resources='remote') 
+    net = Network(
+        height=VIZ_HEIGHT,
+        width=VIZ_WIDTH,
+        directed=True,
+        notebook=False,
+        bgcolor=VIZ_BGCOLOR,
+        font_color=VIZ_FONT_COLOR,
+        filter_menu=True,
+        cdn_resources='remote'
+    )
 
     # Collect all nodes and relationships from all graph documents
     all_nodes = []
@@ -261,11 +343,45 @@ def visualize_graph(graph_documents):
         connected_node_ids.add(rel.source.id)
         connected_node_ids.add(rel.target.id)
 
-    # Add valid nodes to the graph
+    # Calculate node degrees (total connections: both in and out)
+    node_degrees = {}
+    for rel in valid_edges:
+        node_degrees[rel.source.id] = node_degrees.get(rel.source.id, 0) + 1
+        node_degrees[rel.target.id] = node_degrees.get(rel.target.id, 0) + 1
+    
+    # Calculate graph characteristics for adaptive scaling
+    max_degree = max(node_degrees.values()) if node_degrees else 1
+    num_nodes = len(valid_node_ids)
+    
+    # Add valid nodes to the graph with adaptive size scaling
     for node_id in valid_node_ids:
         node = node_dict[node_id]
         try:
-            net.add_node(node.id, label=node.id, title=node.type, group=node.type)
+            degree = node_degrees.get(node_id, 0)
+            
+            # Adaptive scaling based on graph size and max degree
+            if num_nodes < 50 or max_degree < 10:
+                # Small graph: more aggressive scaling for better distinction
+                base_size = 7
+                scale_factor = 15
+                node_size = base_size + scale_factor * (degree ** 1.3)
+                max_size = 300
+            else:
+                # Large graph: gentler scaling to avoid huge nodes
+                base_size = 6
+                scale_factor = 10
+                offset = 2
+                node_size = base_size + scale_factor * degree**0.5
+                max_size = 400
+            
+            node_size = min(max_size, max(base_size, node_size))
+            net.add_node(
+                node.id, 
+                label=node.id, 
+                title=f"{node.type}\nConnections: {degree}", 
+                group=node.type,
+                size=node_size
+            )
         except:
             continue  # Skip node if error occurs
 
@@ -301,73 +417,6 @@ def visualize_graph(graph_documents):
         print(f"Error saving graph: {e}")
         return None
 
-def store_graph_in_neo4j(graph_documents, document_name=None):
-    """Store graph documents in Neo4j database"""
-    try:
-        graph = get_neo4j_connection()
-        
-        st.write("💾 **Storing graph data in Neo4j...**")
-        
-        # Add document metadata to nodes if document_name is provided
-        if document_name:
-            for doc in graph_documents:
-                for node in doc.nodes:
-                    if not hasattr(node, 'properties'):
-                        node.properties = {}
-                    node.properties['source_document'] = document_name
-                    node.properties['created_at'] = datetime.now().isoformat()
-        
-        # Store in Neo4j
-        graph.add_graph_documents(graph_documents)
-        
-        st.write("✅ **Graph data stored successfully in Neo4j**")
-        return True
-        
-    except Exception as e:
-        st.error(f"❌ **Error storing graph in Neo4j:** {str(e)}")
-        return False
-    
-def generate_knowledge_graph(text, document_name=None, store_in_neo4j=True):
-    """
-    Generates and visualizes a knowledge graph from input text.
-
-    This function extracts the graph data, optionally stores
-    the graph in Neo4j, and visualizes the resulting graph using PyVis.
-
-    Args:
-        text (str): Input text to convert into a knowledge graph.
-        document_name (str): Optional name for the document being processed.
-        store_in_neo4j (bool): Whether to store the graph in Neo4j database.
-
-    Returns:
-        pyvis.network.Network: The visualized network graph object.
-    """
-    graph_documents = extract_graph_data(text)
-    
-    # Store in Neo4j if requested
-    if store_in_neo4j and graph_documents:
-        store_graph_in_neo4j(graph_documents, document_name)
-    
-    net = visualize_graph(graph_documents)
-    return net
-
-def get_neo4j_connection():
-    """Get or create Neo4j connection"""
-    global neo4j_graph
-    if neo4j_graph is None:
-        try:
-            st.write("🔗 **Connecting to Neo4j database...**")
-            neo4j_graph = Neo4jGraph(
-                url=neo4j_uri,
-                username=neo4j_username,
-                password=neo4j_password
-            )
-            st.write("✅ **Connected to Neo4j database**")
-        except Exception as e:
-            st.error(f"❌ **Failed to connect to Neo4j:** {str(e)}")
-            st.write("💡 **Make sure Neo4j is running and credentials are correct**")
-            raise e
-    return neo4j_graph
 
 def get_accumulated_graph_visualization():
     """
@@ -394,17 +443,53 @@ def get_accumulated_graph_visualization():
         st.write(f"📊 **Found {len(nodes_data)} nodes and {len(relationships_data)} relationships in Neo4j**")
         
         # Create PyVis network
-        net = Network(height="1200px", width="100%", directed=True,
-                      notebook=False, bgcolor="#222222", font_color="white", 
-                      filter_menu=True, cdn_resources='remote')
+        net = Network(
+            height=VIZ_HEIGHT,
+            width=VIZ_WIDTH,
+            directed=True,
+            notebook=False,
+            bgcolor=VIZ_BGCOLOR,
+            font_color=VIZ_FONT_COLOR,
+            filter_menu=True,
+            cdn_resources='remote'
+        )
+        
+        # Calculate node degrees for accumulated graph
+        node_degrees = {}
+        for rel in relationships_data:
+            node_degrees[rel['source']] = node_degrees.get(rel['source'], 0) + 1
+            node_degrees[rel['target']] = node_degrees.get(rel['target'], 0) + 1
+        
+        # Calculate graph characteristics for adaptive scaling
+        max_degree = max(node_degrees.values()) if node_degrees else 1
+        num_nodes = len(nodes_data)
         
         # Add nodes - use internal_id as unique identifier, id as display label
         for node in nodes_data:
+            degree = node_degrees.get(node['internal_id'], 0)
+            
+            # Adaptive scaling based on graph size and max degree
+            if num_nodes < 50 or max_degree < 10:
+                # Small graph: more aggressive scaling for better distinction
+                base_size = 7
+                scale_factor = 15
+                node_size = base_size + scale_factor * (degree ** 1.3)
+                max_size = 300
+            else:
+                # Large graph: gentler scaling to avoid huge nodes
+                base_size = 6
+                scale_factor = 10
+                offset = 2
+                node_size = base_size + scale_factor * degree**0.5
+                max_size = 400
+            
+            node_size = min(max_size, max(base_size, node_size))
             net.add_node(
                 node['internal_id'], 
                 label=node['id'], 
-                title=f"Type: {node['type']}\nID: {node['id']}\nSource: {node['properties'].get('source_document', 'Unknown')}", 
-                group=node['type']
+                title=f"Type: {node['type']}\nID: {node['id']}\nConnections: {degree}\nSource: {node['properties'].get('source_document', 'Unknown')}", 
+                group=node['type'],
+                size=node_size
             )
         
         # Add relationships
@@ -437,3 +522,29 @@ def get_accumulated_graph_visualization():
     except Exception as e:
         st.error(f"❌ **Error creating accumulated graph visualization:** {str(e)}")
         return None
+
+
+# Main entry point functions
+def generate_knowledge_graph(text, document_name=None, store_in_neo4j=True):
+    """
+    Generates and visualizes a knowledge graph from input text.
+
+    This function extracts the graph data, optionally stores
+    the graph in Neo4j, and visualizes the resulting graph using PyVis.
+
+    Args:
+        text (str): Input text to convert into a knowledge graph.
+        document_name (str): Optional name for the document being processed.
+        store_in_neo4j (bool): Whether to store the graph in Neo4j database.
+
+    Returns:
+        pyvis.network.Network: The visualized network graph object.
+    """
+    graph_documents = extract_graph_data(text)
+    
+    # Store in Neo4j if requested
+    if store_in_neo4j and graph_documents:
+        store_graph_in_neo4j(graph_documents, document_name)
+    
+    net = visualize_graph(graph_documents)
+    return net
