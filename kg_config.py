@@ -5,38 +5,7 @@ Customize entities, relationships, and extraction parameters here
 
 BIOMEDICAL_ENTITIES = ["ViralStrain","CellType","TissueType","OrganSystem","Disease","ClinicalOutcome",
     "Drug","Vaccine","TreatmentProtocol","GeneExpression","GeneVariant","BiologicalProcess", "Demographics", "ClinicalMeasurement" ,"Symptom",
-    "ImmuneResponse", "Antibody", "Receptor", "Enzyme", ]
-
-# Core biomedical entities - expand as needed
-"""BIOMEDICAL_ENTITIES = [
-    # Molecular entities
-    "Gene", "Enzyme", "Antibody", "Antigen",
-    "Chemokine", "Mutation", "Serotype", "Epitope",
-    
-    # Pathological entities  
-    "Disease", "Symptom", "Pathology", "Complication", "Syndrome",
-    "Clinical_outcome", "Disease_severity", "Adverse_event", "Side_effect",
-    "Risk_factor",
-    
-    # Anatomical entities
-    "Cell_type", "Tissue_type", 
-    "Cellular_component", "Receptor", "Membrane",
-    
-    # Microbial entities
-    "Virus", "Viral_gene", 
-    "Viral_mutation", "Pathogen",
-    
-    # Therapeutic entities
-    "Drug", "Drug_class", "Vaccine", 
-    "Treatment_protocol", "Clinical_trial", "Therapy",
-    
-    # Process entities
-    "Biological_process",
-
-    # Population/Environmental
-    "Population_group", "Environmental_factor"
-]
-"""
+    "ImmuneResponse", "Antibody", "Receptor", "Enzyme"]
 
 # Biomedical relationships matching available entities
 BIOMEDICAL_RELATIONSHIPS = [
@@ -161,3 +130,34 @@ EXTRACTION_CONFIG = {
     "chunk_size": 1500,  # Max characters per document chunk
     "overlap": 200  # Overlap between chunks
 }
+
+# Core biomedical entities - expand as needed
+"""BIOMEDICAL_ENTITIES = [
+    # Molecular entities
+    "Gene", "Enzyme", "Antibody", "Antigen",
+    "Chemokine", "Mutation", "Serotype", "Epitope",
+    
+    # Pathological entities  
+    "Disease", "Symptom", "Pathology", "Complication", "Syndrome",
+    "Clinical_outcome", "Disease_severity", "Adverse_event", "Side_effect",
+    "Risk_factor",
+    
+    # Anatomical entities
+    "Cell_type", "Tissue_type", 
+    "Cellular_component", "Receptor", "Membrane",
+    
+    # Microbial entities
+    "Virus", "Viral_gene", 
+    "Viral_mutation", "Pathogen",
+    
+    # Therapeutic entities
+    "Drug", "Drug_class", "Vaccine", 
+    "Treatment_protocol", "Clinical_trial", "Therapy",
+    
+    # Process entities
+    "Biological_process",
+
+    # Population/Environmental
+    "Population_group", "Environmental_factor"
+]
+"""
