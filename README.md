@@ -32,20 +32,14 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 
 1. **새로운 탭 혹은 창에서** [https://github.com/](https://github.com/) 접속, 우상단 **`Sign up`** 클릭
 2. **`Continue with Google`** 선택 혹은 정보 입력 후 **`Create account`** 선택 및 로그인
-3. 이 저장소를 **자신의 github 저장소로 fork:**
-![Alt text](./assets/Fork.png)
-
-4. [https://github.com/features/codespaces?locale=ko-KR](https://github.com/features/codespaces?locale=ko-KR) 접속, **`무료로 시작하기`** 클릭
-5. fork한 저장소를 이용하여 codespace 생성
-![Alt text](./assets/create_new_codespace.png)
-
-6. 다음과 같은 화면이 나올 시 정상적으로 완료된 상태 
-![Alt text](./assets/example_screen.png)
+3. **이 저장소**에서 코드스페이스 생성
+![alt text](./assets/generate_codespace.png)
+![alt text](./assets/generate_codespace2.png)
 
 > **참고:**   
-> 자신의 저장소를 이용해서 **`codespace`** 를 생성하게 되면
-> **`git clone`** 을 한 것과 동일한 상태로 **`vscode`** 와 터미널을 사용할 수 있습니다.  
-> **`codespace`** 를 사용하지 않는다면 터미널에서 **`git clone`** 을 실행해서 원격 저장소를 로컬로 불러와야 합니다.
+> 저장소를 이용해서 **`codespace`** 를 생성하게 되면  
+> **`git clone`** 을 하고 필요한 패키지를 모두 설치한 것과 동일한 상태로 **`vscode`** 와 터미널을 사용할 수 있습니다.  
+> **`codespace`** 를 사용하지 않는다면 터미널에서 **`git clone`** 을 실행하고 필요한 패키지를 모두 설치해야 합니다.
 
 ---
 ### 2. Neo4j 설정
@@ -78,7 +72,7 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 6. 생성된 API Key 안전한 곳에 복사하여 **쉽게 접근할 수 있는 곳에 저장하고 다른 사람과 공유하지 마십시오.**
 ![Alt text](./assets/get_api_key_4.png)
 
-> **주의:** Google Gemini API로 Gemini Flash 2.5 모델 사용 시 무료 할당량으로 분당 10회, 일일 250회 요청 제한이 있습니다.
+> **주의:** Google Gemini API로 Gemini Flash 2.5 모델 사용 시 무료 할당량으로 분당 10회, 일일 250회, 분당 250k 토큰 요청 제한이 있습니다.
 ![Alt text](./assets/gemini_api_status.png)
 > [Gemini API status](https://aistudio.google.com/status)에 따라 API 제공이 원활하게 안되는 경우가 발생할 수 있습니다.
 
