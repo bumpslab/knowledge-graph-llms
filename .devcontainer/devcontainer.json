@@ -42,6 +42,13 @@
           "**/__pycache__": true,
           "**/.pytest_cache": true,
           "**/*.pyc": true
+        },
+        "workbench.colorTheme": "Default Dark+",
+        "workbench.iconTheme": "vs-seti",
+        "workbench.colorCustomizations": {
+          "activityBar.background": "#1e1e1e",
+          "sideBar.background": "#252526",
+          "editor.background": "#1e1e1e"
         }
       }
     }
