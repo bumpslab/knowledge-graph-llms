@@ -30,6 +30,7 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 
 ### 1. Github 계정 및 Github Codespaces 설정
 
+> Github 계정이 있고 로그인이 되어있다면 1,2번은 건너 뛰시고 바로 코드스페이스 단계를 실행해주세요.
 1. **새로운 탭 혹은 창에서** [https://github.com/](https://github.com/) 접속, 우상단 **`Sign up`** 클릭
 2. **`Continue with Google`** 선택 혹은 정보 입력 후 **`Create account`** 선택 및 로그인
 3. **이 저장소**에서 코드스페이스 생성
