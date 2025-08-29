@@ -4,7 +4,7 @@
 
 ## 프로젝트 개요
 
-이 프로젝트는 LangChain을 사용하여 텍스트에서 엔터티와 관계를 추출하고 Neo4j에 저장하는 Streamlit 기반 지식 그래프 애플리케이션입니다. 직접적인 OpenAI 통합 대신 OpenRouter API를 사용하여 무료 모델을 포함한 다양한 모델을 사용할 수 있는 유연성을 제공합니다.
+이 프로젝트는 LangChain을 사용하여 텍스트에서 엔터티와 관계를 추출하고 Neo4j에 저장하는 Streamlit 기반 지식 그래프 애플리케이션입니다. Google Gemini API를 사용하여 고성능 LLM 기능을 제공하며, 생물의학 도메인에 특화된 지식 그래프 추출이 가능합니다.
 
 ## 주요 아키텍처 구성 요소
 
@@ -14,7 +14,8 @@
   - `visualize_graph()`: 물리 기반 레이아웃을 가진 PyVis 네트워크 시각화
   - `store_graph_in_neo4j()`: 메타데이터 강화를 통한 Neo4j 저장
   - `get_accumulated_graph_visualization()`: 문서 전반에 걸친 모든 저장된 지식을 검색하고 시각화
-- **OpenRouter 통합**: OpenRouter API를 가리키는 사용자 정의 기본 URL(`https://openrouter.ai/api/v1`)과 함께 ChatOpenAI 사용
+- **Google Gemini 통합**: ChatGoogleGenerativeAI를 사용하여 gemini-2.5-flash 모델에 직접 접근
+- **생물의학 특화**: kg_config.py에서 정의된 BIOMEDICAL_ENTITIES 및 BIOMEDICAL_RELATIONSHIPS를 통한 도메인 특화 추출
 
 ## 개발 명령어
 
@@ -40,7 +41,7 @@ streamlit run app.py
 
 ### 환경 구성
 `.env`에 필요한 환경 변수:
-- `OPENROUTER_API_KEY`: OpenRouter 서비스용 API 키
+- `GOOGLE_API_KEY`: Google Gemini 서비스용 API 키
 - `NEO4J_URI`: Neo4j 데이터베이스 연결 문자열 (예: bolt://localhost:7687)
 - `NEO4J_USERNAME`: Neo4j 사용자명
 - `NEO4J_PASSWORD`: Neo4j 비밀번호
@@ -48,15 +49,21 @@ streamlit run app.py
 ## 주요 기술적 세부사항
 
 ### LLM 모델 구성
-- 현재 OpenRouter를 통해 `microsoft/mai-ds-r1:free` 모델 사용
+- 현재 Google Gemini API를 통해 `gemini-2.5-flash` 모델 사용
 - 일관된 추출 결과를 위해 Temperature를 0으로 설정
-- `generate_knowledge_graph.py`에서 `model_name` 매개변수를 수정하여 모델 변경 가능
+- Gemini 레이트 제한: 분당 10회 요청으로 MAX_CHUNKS 제한
+- `generate_knowledge_graph.py`에서 ChatGoogleGenerativeAI 초기화 부분에서 모델 변경 가능
 
 ### 데이터 흐름
 1. 텍스트 입력 (파일 업로드 또는 수동 입력) → 
-2. LLMGraphTransformer가 엔터티/관계 추출 → 
+2. LLMGraphTransformer가 생물의학 도메인 특화 엔터티/관계 추출 → 
 3. 메타데이터와 함께 Neo4j에 선택적 저장 (소스 문서, 타임스탬프) → 
 4. 인터랙티브 기능을 가진 PyVis 시각화
+
+### 생물의학 도메인 특화
+- **kg_config.py**에서 정의된 생물의학 엔터티 타입 (유전자, 단백질, 질병, 약물 등)
+- 생물의학 관계 타입 (상호작용, 조절, 위치 등) 지원
+- EXTRACTION_CONFIG를 통한 추출 매개변수 세밀 조정
 
 ### Neo4j 통합
 - 지연 초기화를 통한 전역 연결 풀링
@@ -73,11 +80,16 @@ streamlit run app.py
 
 ## 파일 구조 참고사항
 
+- **app.py**: 메인 Streamlit 애플리케이션
+- **generate_knowledge_graph.py**: 핵심 지식 그래프 생성 로직
+- **kg_config.py**: 생물의학 도메인 특화 설정
+- **llm_graph_transformer.py**: 사용자 정의 LLM 그래프 변환기
 - `assets/`: 문서용 스크린샷 및 이미지
-- `*.html`: 생성된 그래프 시각화 (런타임에 생성)
 - `knowledge_graph.md`: 그래프 구성 패턴에 대한 LangChain 문서
 - `neo4jgraph.md`: Neo4j 관련 추가 문서
 - 포괄적인 설정 지침이 포함된 한국어 README.md
+
+**주의**: .gitignore에 포함된 파일들 (*.env, __pycache__/, *.html, CLAUDE.md 등)은 버전 관리에서 제외됨
 
 ## 애플리케이션 테스트
 
