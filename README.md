@@ -41,7 +41,8 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 > **`git clone`** 을 하고 필요한 패키지를 모두 설치한 것과 동일한 상태로 **`vscode`** 와 터미널을 사용할 수 있습니다.  
 > **`codespace`** 를 사용하지 않는다면 터미널에서 **`git clone`** 을 실행하고 필요한 패키지를 모두 설치해야 합니다.
 
-다음과 같은 화면이 나올 시 완료된 상황입니다.
+다음과 같은 화면이 나올 시 **`codespace`**가 정상적으로 만들어진 상황입니다.
+
 ![alt text](./assets/example_screen.png)
 ---
 ### 2. Neo4j 설정
