@@ -78,9 +78,13 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 6. 생성된 API Key 안전한 곳에 복사하여 **쉽게 접근할 수 있는 곳에 저장하고 다른 사람과 공유하지 마십시오.**
 ![Alt text](./assets/get_api_key_4.png)
 
-> **주의:** Google Gemini API로 Gemini Flash 2.5 모델 사용 시 무료 할당량으로 분당 10회, 일일 250회 요청 제한이 있습니다.  
+> **주의:** Google Gemini API로 Gemini Flash 2.5 모델 사용 시 무료 할당량으로 분당 10회, 일일 250회 요청 제한이 있습니다.
+![Alt text](./assets/gemini_api_status.png)
+> [Gemini API status](https://aistudio.google.com/status)에 따라 API 제공이 원활하게 안되는 경우가 발생할 수 있습니다.
+
 > **참고:** [Google Cloud](https://cloud.google.com/free?hl=ko&_gl=1*1km53bs*_ga*MTc0NDIwOTA4NC4xNzUyNDUwOTIx*_ga_WH2QY8WWF5*czE3NTYyNjQ4NzYkbzEyJGcwJHQxNzU2MjY0ODc2JGo2MCRsMCRoMA..)에서 무료로 90일간 제공하는 $300 크레딧을 이용할 수 있습니다. 관심 있으신 분은 실습 이후에 이용 바랍니다.  
 추가적으로 대학(원)생 분들은 2025.10.06까지 [여기](https://gemini.google/students/?hl=ko)에서 신청하면 **Gemini의 Pro 버전을 1년간 무료**로 사용할 수 있습니다.
+
 ---
 ## 설치
 **의존성(패키지를 실행시키기 위한 패키지) 설치**를 위해 **`uv`** 사용을 권장합니다. **`uv`** 를 설치하고 가상 환경을 활성화하십시오.  
@@ -154,11 +158,11 @@ streamlit run app.py
 2. Cypher text query를 이용해서 DB에서 노드 쿼리 하기 [공식 문서 참조](https://neo4j.com/docs/cypher-manual/current/introduction/)
 ![Alt text](./assets/Neo4j_query_example.png)
 
-> **참고:** GPT등 LLM에게 물어봐도 되고 Neo4j에서도 LLM을 이용해 자연어 쿼리를 Cypher text 쿼리로 바꿔주는 기능을 제공합니다.[공식 문서 참조](https://neo4j.com/labs/neodash/2.4/user-guide/extensions/natural-language-queries/)
+> **참고:** GPT등 LLM에게 물어봐도 되고 Neo4j에서도 LLM을 이용해 자연어 쿼리를 Cypher text 쿼리로 바꿔주는 기능을 제공합니다. [공식 문서 참조](https://neo4j.com/labs/neodash/2.4/user-guide/extensions/natural-language-queries/)
 
 ## 코드 고도화
 
-1. Github Copilot을 이용해 코드베이스에 대해 질문해보고 기능들에 대해 구체적으로 이해해보세요.[어플리케이션 작동 원리](#어플리케이션-작동-원리)와 [project_structure.md](./project_structure.md)에서도 간략히 확인 가능합니다.
+1. Github Copilot을 이용해 코드베이스에 대해 질문해보고 기능들에 대해 구체적으로 이해해보세요. [어플리케이션 작동 원리](#어플리케이션-작동-원리)와 [project_structure.md](./project_structure.md)에서도 간략히 확인 가능합니다.
 2. 이 저장소의 **`vibe.example.md`** 를 참고해서 코드를 고도화해봅시다.  
    > 꼭 예제의 흐름대로 가지 않으셔도 됩니다. 자유롭게 시도해보세요.
 3. 코드 수정 및 고도화를 진행해보면서 버전관리를 같이 진행해보세요.
