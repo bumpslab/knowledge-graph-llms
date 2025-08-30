@@ -45,13 +45,12 @@ COVID-19 논문 데이터는 [kaggle](https://www.kaggle.com/code/xhlulu/cord-19
 페이지 로딩 시간이 5분 가량 걸리니 다음 단계로 계속 진행하시면 됩니다.  
 다음과 같은 화면이 나올 시 **`codespace`** 가 정상적으로 만들어진 상황입니다.
 
-![alt text](./assets/example_screen.png)
 ---
 ### 2. Neo4j 설정
 
 1. **새로운 탭 혹은 창에서** [https://neo4j.com/product/auradb/](https://neo4j.com/product/auradb/)로 이동하여 **`Start Free`** 클릭
 2. **`Continue with Google`** 클릭하고 로그인
-3. 각 단계를 거쳐 필요한 정보 입력: **마구잡이로 입력해도 됩니다.**
+3. 각 단계를 거쳐 필요한 정보 입력: **정확하지 않아도 괜찮으니 편하게 입력하시면 됩니다.**
 4. **`Create instance`** 클릭
 5. **`Download to Continue`** 클릭
 ![Alt text](./assets/neo4j_setup.png)
@@ -107,10 +106,11 @@ streamlit run app.py
 이렇게 하면 애플리케이션이 시작됩니다.  
 출력된 링크 주소로 접속해주세요.  
 
-## 사용법
-
+## Knowledge Graph 확인 방법
+### Streamlit 에서 지식 그래프 생성 결과 확인
 1. 사이드바에서 입력 방법을 선택하기 (txt 업로드 또는 텍스트 입력)
 2. 파일을 업로드하는 경우 컴퓨터에서 .txt 파일을 선택하기
+- 실습 zip파일을 압축해제 하시면 예제 .txt파일이 있습니다
 3. 직접 입력을 사용하는 경우 텍스트 영역에 텍스트를 입력하거나 붙여넣기
 4. "Generate Knowledge Graph" 버튼을 클릭하기
 5. 그래프가 생성될 때까지 기다리기 (텍스트 길이에 따라 몇 분 정도 소요될 수 있습니다)
@@ -120,7 +120,8 @@ streamlit run app.py
    - 마우스 휠을 사용하여 확대/축소
    - 특정 노드와 엣지에 대해 그래프 필터링
 
-#### Neo4j 콘솔에서 지식 그래프 생성 결과 확인
+### Neo4j 콘솔에서 지식 그래프 생성 결과 확인
+> 참고: 앞의 방법의 5번까지 실행이 선행되어야 합니다.
 1. Neo4j aura console에서 **`Dashboards`** 클릭 후 Dashboard를 Instance와 연결하기
 ![Alt text](./assets/connect_dashboard.png)
 
@@ -132,7 +133,7 @@ streamlit run app.py
 ## 코드 고도화
 
 1. Github Copilot을 이용해 코드베이스에 대해 질문해보고 기능들에 대해 구체적으로 이해해보세요. [어플리케이션 작동 원리](#어플리케이션-작동-원리)와 [project_structure.md](./project_structure.md)에서도 간략히 확인 가능합니다.
-2. 이 저장소의 **`vibe.example.md`** 를 참고해서 코드를 고도화해봅시다.  
+2. 이 저장소의 [**`vibe.example.md`**](./vibe.example.md) 를 참고해서 코드를 고도화해봅시다.  
    > 꼭 예제의 흐름대로 가지 않으셔도 됩니다. 자유롭게 시도해보세요.
 3. 코드 수정 및 고도화를 진행해보면서 버전관리를 같이 진행해보세요.
    > **기본 git 개념과 git 명령어들을 학습해보세요.**  
