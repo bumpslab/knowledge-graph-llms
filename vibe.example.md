@@ -6,8 +6,8 @@
 >- [Github Copilot Tips, tricks, best practices](https://github.blog/developer-skills/github/how-to-use-github-copilot-in-your-ide-tips-tricks-and-best-practices/)
 
 ## 목표
-생성한 지식 그래프를 활용한 질의응답(Q&A) 애플리케이션을 만들어봅시다.  
-지식 그래프를 단순한 시각화를 넘어 실용적인 RAG(Retrieval Augmented Generation) 시스템을 만드는데 이용해봅시다.
+1. 지식 그래프를 생성을 개선해봅시다.
+2. 생성한 지식 그래프를 활용한 질의응답(Q&A) 애플리케이션을 만들어 봅시다.  
 
 우선 본격적으로 코드베이스를 수정하기 전에 코드베이스에 대해서 이해해봅시다.
 

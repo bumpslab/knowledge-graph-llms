@@ -121,7 +121,7 @@ streamlit run app.py
    - 특정 노드와 엣지에 대해 그래프 필터링
 
 ### Neo4j 콘솔에서 지식 그래프 생성 결과 확인
-> 참고: 앞의 방법의 5번까지 실행이 선행되어야 합니다.
+> 참고: [앞 단계](#streamlit-에서-지식-그래프-생성-결과-확인)의 5번까지 실행이 선행되어야 합니다.
 1. Neo4j aura console에서 **`Dashboards`** 클릭 후 Dashboard를 Instance와 연결하기
 ![Alt text](./assets/connect_dashboard.png)
 
