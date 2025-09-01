@@ -1,4 +1,4 @@
-# Streamlit: 웹 애플리케이션 프레임워크
+# Streamlit: 생명의학 지식 그래프 웹 인터페이스
 
 > **참조:**
 > - [https://github.com/streamlit/streamlit](https://github.com/streamlit/streamlit)
@@ -20,7 +20,8 @@ Streamlit은 Python 기반의 오픈소스 웹 애플리케이션 프레임워�
 ### 2. 백엔드 서비스와의 연결
 - **LangChain 통합**: `generate_knowledge_graph.py`의 함수들을 웹 인터페이스를 통해 호출
 - **Neo4j 연동**: 그래프 데이터베이스 저장 및 조회 기능의 UI 제공
-- **OpenRouter API**: LLM 모델 호출을 위한 설정 관리
+- **Google Gemini API**: LLM 모델 호출을 위한 설정 관리
+- **생명의학 도메인 특화**: 커스텀 엔티티 및 관계 타입으로 도메인 특화 지식 그래프 구축
 
 ### 3. 시각화 플랫폼
 - **PyVis 그래프**: 추출된 지식 그래프의 인터랙티브 시각화
@@ -77,28 +78,45 @@ with col1:
 ### 1. 파일 업로드 및 텍스트 처리
 ```python
 # app.py에서의 활용 예시
-uploaded_file = st.file_uploader("파일을 선택하세요", type=['txt', 'pdf', 'docx'])
+uploaded_file = st.file_uploader("Upload file", type=["txt"])
 if uploaded_file:
-    content = uploaded_file.read().decode('utf-8')
-    graph_data = await extract_graph_data(content)
+    text = uploaded_file.read().decode("utf-8")
+    if st.sidebar.button("Generate Knowledge Graph"):
+        net = generate_knowledge_graph(text, document_name, store_in_neo4j)
 ```
 
-### 2. 설정 관리
+### 2. 입력 방식 선택 및 Neo4j 저장 옵션
 ```python
-# 사이드바를 통한 Neo4j 설정
-with st.sidebar:
-    st.header("Neo4j 설정")
-    neo4j_uri = st.text_input("Neo4j URI")
-    neo4j_username = st.text_input("사용자명")
-    neo4j_password = st.text_input("비밀번호", type="password")
+# 사이드바를 통한 입력 방식 및 저장 옵션 설정
+st.sidebar.title("Input document")
+input_method = st.sidebar.radio(
+    "Choose an input method:",
+    ["Upload txt", "Input text"]
+)
+
+st.sidebar.title("Storage Options")
+store_in_neo4j = st.sidebar.checkbox("Store in Neo4j database", value=True)
 ```
 
-### 3. 결과 시각화
+### 3. 결과 시각화 및 누적 그래프
 ```python
 # 그래프 시각화 및 표시
-if graph_data:
-    html_content = visualize_graph(graph_data)
-    st.components.v1.html(html_content, height=600)
+if st.sidebar.button("Generate Knowledge Graph"):
+    net = generate_knowledge_graph(text, document_name, store_in_neo4j)
+    output_file = "knowledge_graph.html"
+    net.save_graph(output_file)
+    
+    HtmlFile = open(output_file, 'r', encoding='utf-8')
+    components.html(HtmlFile.read(), height=1000)
+
+# 누적 그래프 기능
+if st.sidebar.button("Show Accumulated Graph"):
+    net = get_accumulated_graph_visualization()
+    if net is not None:
+        output_file = "accumulated_knowledge_graph.html"
+        net.save_graph(output_file)
+        HtmlFile = open(output_file, 'r', encoding='utf-8')
+        components.html(HtmlFile.read(), height=1000)
 ```
 
 ## 장점과 한계
@@ -115,6 +133,26 @@ if graph_data:
 3. **상태 관리**: 복잡한 상태 관리의 어려움
 4. **멀티유저**: 동시 사용자 지원의 제한
 
-Streamlit은 데이터 중심 웹 애플리케이션을 빠르게 구축하는 데 매우 효과적인 도구입니다. 특히 이 지식 그래프 프로젝트처럼 텍스트 처리, 데이터 시각화, 외부 서비스 연동이 필요한 경우에 이상적인 선택입니다. 
+## 현재 프로젝트의 주요 특징
 
-복잡한 웹 개발 지식 없이도 사용자 친화적인 인터페이스를 제공하면서, Python 백엔드 로직과의 원활한 통합을 가능하게 하여 개발 생산성을 크게 향상시킵니다.
+### 1. 간소화된 UI 구조
+- **와이드 레이아웃**: `layout="wide"`로 그래프 시각화에 최적화
+- **사이드바 중심**: 모든 컨트롤이 사이드바에 집약되어 직관적 조작
+- **실시간 피드백**: 처리 과정을 단계별로 표시 (`st.spinner`, `st.success`)
+
+### 2. 이중 입력 방식 지원
+- **파일 업로드**: TXT 파일 업로드를 통한 배치 처리
+- **직접 입력**: 텍스트 영역을 통한 즉시 처리
+- **동적 인터페이스**: 선택된 입력 방식에 따라 UI 적응
+
+### 3. 누적 지식 관리
+- **개별 그래프**: 각 문서별 독립적인 지식 그래프 생성
+- **누적 그래프**: Neo4j에서 모든 문서의 지식을 통합하여 시각화
+- **메타데이터 추적**: 각 지식의 출처 문서 및 생성 시간 기록
+
+### 4. 생명의학 연구 최적화
+- **대용량 논문 처리**: 청킹을 통한 긴 학술 논문 자동 처리
+- **전문 용어 추출**: 생명의학 도메인 특화 엔티티 및 관계 추출
+- **연구 협업**: 여러 논문의 지식을 통합한 종합적 분석
+
+Streamlit은 이 생명의학 지식 그래프 프로젝트에서 **연구자 친화적인 인터페이스**를 제공합니다. 복잡한 AI 모델과 그래프 데이터베이스를 간단한 클릭 몇 번으로 조작할 수 있게 하여, 생명의학 연구자들이 기술적 복잡성에 신경 쓰지 않고 연구 내용에 집중할 수 있도록 지원합니다.

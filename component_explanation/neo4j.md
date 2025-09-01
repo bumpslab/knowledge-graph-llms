@@ -1,4 +1,4 @@
-# Neo4j: 그래프 데이터베이스
+# Neo4j: 생명의학 지식 그래프 데이터베이스
 
 > **참조:**
 > - [https://neo4j.com/top-ten-reasons/](https://neo4j.com/top-ten-reasons/)
@@ -12,23 +12,29 @@ Neo4j는 세계 점유율 1위의 그래프 데이터베이스로, 성숙하고 
 
 본 지식 그래프 프로젝트에서 Neo4j는 다음과 같은 핵심 역할을 담당합니다:
 
-### 1. 지식 그래프 저장소
-- **엔티티 저장**: LLM이 추출한 개체(노드)들을 구조화된 형태로 저장
-- **관계 저장**: 개체 간의 복잡한 관계(엣지)를 효율적으로 관리
-- **메타데이터 관리**: 소스 문서, 생성 시간 등의 추가 정보 저장
+### 1. 생명의학 지식 그래프 저장소
+- **생명의학 엔티티 저장**: 유전자, 단백질, 질병, 약물 등의 전문 개체들을 구조화되게 저장
+- **생물학적 관계 저장**: 유전자-단백질 상호작용, 질병 연관성, 약물 작용 기전 등 복잡한 생물학적 관계 관리
+- **연구 메타데이터 관리**: 소스 논문, 생성 시간, 연구 배경 등의 추가 정보 저장
 
-### 2. 누적 지식 관리
+### 2. 다중 논문 지식 통합
 ```python
 # generate_knowledge_graph.py의 store_graph_in_neo4j 함수
-def store_graph_in_neo4j(graph_documents, source_document=""):
-    # 여러 문서에서 추출된 지식을 통합 저장
-    # 중복 제거 및 관계 연결
+def store_graph_in_neo4j(graph_documents, document_name=None):
+    # 여러 생명의학 논문에서 추출된 지식을 통합 저장
+    # 논문별 메타데이터 추가 및 중복 엔티티 처리
+    if document_name:
+        for doc in graph_documents:
+            for node in doc.nodes:
+                node.properties['source_document'] = document_name
+                node.properties['created_at'] = datetime.now().isoformat()
 ```
 
-### 3. 고급 쿼리 및 분석
-- **Cypher 쿼리**: 복잡한 그래프 탐색 및 패턴 매칭
-- **집계 및 통계**: 지식 그래프의 구조적 분석
-- **경로 탐색**: 개체 간의 연결 경로 발견
+### 3. 생명의학 연구 맞춤 쿼리 및 분석
+- **유전자 경로 분석**: 특정 질병과 연관된 유전자 네트워크 탐색
+- **약물-표적 상호작용**: 약물과 단백질 간의 상호작용 경로 추적
+- **질병 연관성 분석**: 여러 질병 간의 공통 생물학적 경로 발견
+- **논문 간 지식 연결**: 다른 연구에서 보고된 동일 개체들의 연결 및 비교
 
 ## Neo4j의 필요성
 
@@ -76,12 +82,19 @@ CREATE (n:Document {
 
 ## 이 프로젝트에서의 구체적 활용
 
-### 1. 지식 그래프 구축
+### 1. 생명의학 논문 지식 그래프 구축
 ```python
 # generate_knowledge_graph.py의 구현
-async def extract_graph_data(text: str):
-    # LLMGraphTransformer로 텍스트에서 그래프 추출
-    # Neo4j에 저장하여 영구적 지식 베이스 구축
+def extract_graph_data(text):
+    # 대용량 생명의학 논문의 청킹 처리
+    if len(text) > chunk_size:
+        chunks = TEXT_SPLITTER.split_text(text)
+        if len(chunks) > MAX_CHUNKS:  # Gemini API 제한 고려
+            st.warning(f"⚠️ Text would create {len(chunks)} chunks")
+    
+    # 생명의학 도메인 특화 그래프 변환
+    transformer = create_graph_transformer()  # 도메인 특화 프롬프트
+    return _run_async_in_thread(transformer.aconvert_to_graph_documents(documents))
 ```
 
 ### 2. 메타데이터 강화
@@ -92,13 +105,24 @@ SET entity.source_document = $source,
     entity.created_at = $timestamp
 ```
 
-### 3. 누적 그래프 시각화
+### 3. 다중 논문 통합 시각화
 ```python
 # get_accumulated_graph_visualization 함수
-# 모든 저장된 지식을 통합하여 시각화
 def get_accumulated_graph_visualization():
-    # Neo4j에서 전체 그래프 데이터 조회
-    # PyVis로 인터랙티브 시각화 생성
+    # 내부 ID를 사용한 노드 식별자 처리
+    nodes_query = """
+    MATCH (n) 
+    RETURN id(n) as internal_id, n.id as id, 
+           labels(n)[0] as type, properties(n) as properties
+    """
+    
+    # 논문별 메타데이터를 포함한 시각화
+    net.add_node(
+        node['internal_id'], 
+        label=node['id'], 
+        title=f"Type: {node['type']}\nSource: {node['properties'].get('source_document', 'Unknown')}",
+        group=node['type']
+    )
 ```
 
 ## 관계형 데이터베이스와의 비교
@@ -147,35 +171,53 @@ RETURN n.name, degree
 ### 1. 연결 관리
 ```python
 # generate_knowledge_graph.py
-neo4j_driver = None
+neo4j_graph = None  # LangChain Neo4jGraph 인스턴스
 
-def get_neo4j_driver():
-    global neo4j_driver
-    if neo4j_driver is None:
-        neo4j_driver = GraphDatabase.driver(
-            NEO4J_URI, 
-            auth=(NEO4J_USERNAME, NEO4J_PASSWORD)
+def get_neo4j_connection():
+    global neo4j_graph
+    if neo4j_graph is None:
+        neo4j_graph = Neo4jGraph(
+            url=NEO4J_URI,
+            username=NEO4J_USERNAME,
+            password=NEO4J_PASSWORD
         )
-    return neo4j_driver
+    return neo4j_graph
 ```
 
-### 2. 데이터 저장
+### 2. 데이터 저장 (생명의학 논문 메타데이터 포함)
 ```python
-def store_graph_in_neo4j(graph_documents, source_document=""):
-    with get_neo4j_driver().session() as session:
+def store_graph_in_neo4j(graph_documents, document_name=None):
+    graph = get_neo4j_connection()
+    
+    # 논문별 메타데이터 추가
+    if document_name:
         for doc in graph_documents:
-            # 노드 생성 및 메타데이터 추가
-            # 관계 생성 및 중복 처리
+            for node in doc.nodes:
+                if not hasattr(node, 'properties'):
+                    node.properties = {}
+                node.properties['source_document'] = document_name
+                node.properties['created_at'] = datetime.now().isoformat()
+    
+    # LangChain의 그래프 문서를 직접 Neo4j에 저장
+    graph.add_graph_documents(graph_documents)
 ```
 
-### 3. 시각화용 데이터 조회
+### 3. 다중 논문 통합 시각화용 데이터 조회
 ```python
 def get_accumulated_graph_visualization():
-    query = """
-    MATCH (n)-[r]->(m)
-    RETURN n, r, m
+    # 내부 Neo4j ID를 사용한 정확한 노드 매핑
+    nodes_query = """
+    MATCH (n) 
+    RETURN id(n) as internal_id, n.id as id, labels(n)[0] as type, properties(n) as properties
     """
-    # 모든 노드와 관계를 조회하여 시각화
+    
+    relationships_query = """
+    MATCH (a)-[r]->(b) 
+    RETURN id(a) as source, id(b) as target, type(r) as type
+    """
+    
+    # 논문 출처 정보를 포함한 톨티프 생성
+    # 여러 논문의 동일 엔티티 발견 및 연결 시각화
 ```
 
 ## 장점과 고려사항
@@ -205,6 +247,23 @@ def get_accumulated_graph_visualization():
 - **이벤트 처리**: 변경 감지 및 알림
 - **동기화**: 다중 소스 데이터 통합
 
-Neo4j는 이 지식 그래프 프로젝트에서 핵심적인 역할을 담당합니다. LLM이 추출한 복잡한 관계형 데이터를 효율적으로 저장하고 관리하며, 여러 문서에서 추출된 지식을 통합하여 누적적인 지식 베이스를 구축합니다.
+## 생명의학 연구에서의 Neo4j 가치
 
-특히 Generative AI 시대에서 Neo4j의 GraphRAG 기능은 LLM의 응답 품질을 크게 향상시키며, 구조화된 지식을 통한 설명 가능한 AI 시스템 구축을 가능하게 합니다. 관계형 데이터베이스로는 달성하기 어려운 복잡한 관계 분석과 패턴 탐지를 통해 지식 그래프의 진정한 가치를 실현합니다.
+Neo4j는 이 생명의학 지식 그래프 프로젝트에서 **연구 혈신을 가속화하는 핵심 인프라**역할을 합니다:
+
+### 1. 다학제 간 연구 협업 지원
+- **논문 간 지식 연결**: 서로 다른 연구에서 보고된 동일 엔티티들의 자동 연결
+- **지식 발견**: 서로 다른 연구 분야에서 보고된 예상치 못한 연결 관계 발견
+- **연구 간극 해소**: 기존 연구의 상반된 결과나 모순 분석
+
+### 2. 실시간 가설 검증
+- **경로 분석**: 새로운 약물 후보 물질의 작용 경로 예측
+- **부작용 예측**: 기존 지식에 기반한 잠재적 약물 상호작용 발견
+- **생물학적 타당성**: 새로운 연구 결과의 기존 지식와의 일관성 검증
+
+### 3. 학술적 영향력 분석
+- **인용 네트워크**: 연구 결과들 간의 인용 관계 시각화
+- **연구 동향**: 특정 분야의 연구 흐름 및 트렌드 파악
+- **지식 공백**: 아직 충분히 연구되지 않은 영역 식별
+
+특히 **대용량 생명의학 논문 처리**에 최적화되어 있어, 연구자들은 수많은 논문을 일일이 읽지 않고도 핵심 지식을 신속하게 추출하고 연결할 수 있습니다. 이는 전통적인 문헌 리뷰 방식을 혁신하여 **데이터 주도적 연구(Data-Driven Research)**를 가능하게 합니다.

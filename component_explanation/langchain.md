@@ -29,41 +29,61 @@
 ### 1. 핵심 LangChain 컴포넌트 사용
 
 ```python
-from langchain_experimental.graph_transformers import LLMGraphTransformer
 from langchain_core.documents import Document
-from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_neo4j import Neo4jGraph
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from llm_graph_transformer import LLMGraphTransformer
+from kg_config import BIOMEDICAL_ENTITIES, BIOMEDICAL_RELATIONSHIPS
 ```
 
-### 2. LLM 통합 - ChatOpenAI
+### 2. LLM 통합 - ChatGoogleGenerativeAI
 ```python
-llm = ChatOpenAI(
-    temperature=0, 
-    model_name="microsoft/mai-ds-r1:free",
-    openai_api_key=api_key,
-    openai_api_base="https://openrouter.ai/api/v1"
-)
+from langchain_google_genai import ChatGoogleGenerativeAI
+
+def create_llm_instance():
+    return ChatGoogleGenerativeAI(
+        model="gemini-2.5-flash",
+        temperature=0,
+        google_api_key=API_KEY
+    )
 ```
 
 **활용 방식:**
-- **ChatOpenAI** 클래스를 사용하여 OpenRouter API 통합
-- OpenAI 호환 인터페이스를 통해 다양한 모델 제공자 접근
-- 일관된 API로 모델 교체 시 코드 변경 최소화
+- **ChatGoogleGenerativeAI** 클래스를 사용하여 Google Gemini API 통합
+- gemini-2.5-flash 모델을 사용하여 빠르고 정확한 그래프 변환
+- 새로운 인스턴스를 생성하여 연결 문제 방지
 
-### 3. 그래프 변환 - LLMGraphTransformer
+### 3. 그래프 변환 - LLMGraphTransformer (커스텀)
 ```python
-graph_transformer = LLMGraphTransformer(llm=llm)
+from llm_graph_transformer import LLMGraphTransformer
 
-async def extract_graph_data(text):
-    documents = [Document(page_content=text)]
-    graph_documents = await graph_transformer.aconvert_to_graph_documents(documents)
-    return graph_documents
+def create_graph_transformer():
+    llm = create_llm_instance()
+    prompt = get_final_prompt(additional_instructions=additional_prompt)
+    
+    return LLMGraphTransformer(
+        llm=llm,
+        allowed_nodes=BIOMEDICAL_ENTITIES,
+        allowed_relationships=BIOMEDICAL_RELATIONSHIPS,
+        prompt=prompt
+    )
+
+def extract_graph_data(text):
+    # 텍스트 청킹 및 처리
+    chunks = TEXT_SPLITTER.split_text(text) if len(text) > chunk_size else [text]
+    documents = [Document(page_content=chunk) for chunk in chunks]
+    
+    transformer = create_graph_transformer()
+    return _run_async_in_thread(transformer.aconvert_to_graph_documents(documents))
 ```
 
 **활용 방식:**
-- **LLMGraphTransformer**를 사용하여 비구조화된 텍스트를 구조화된 그래프로 변환
-- **Document** 객체로 텍스트를 래핑하여 LangChain 생태계와 호환
-- 비동기 처리로 성능 최적화
+- **커스텀 LLMGraphTransformer**를 사용하여 생명의학 도메인에 특화된 그래프 변환
+- **사전 정의된 엔티티 및 관계 타입**으로 일관성 있는 그래프 구조 보장
+- **텍스트 청킹**으로 긴 문서 처리 및 API 제한 대응
+- **스레드 기반 비동기 처리**로 Streamlit과의 호환성 확보
 
 ### 4. 그래프 데이터베이스 통합 - Neo4jGraph
 ```python
@@ -71,16 +91,31 @@ def get_neo4j_connection():
     global neo4j_graph
     if neo4j_graph is None:
         neo4j_graph = Neo4jGraph(
-            url=neo4j_uri,
-            username=neo4j_username,
-            password=neo4j_password
+            url=NEO4J_URI,
+            username=NEO4J_USERNAME,
+            password=NEO4J_PASSWORD
         )
     return neo4j_graph
+
+def store_graph_in_neo4j(graph_documents, document_name=None):
+    graph = get_neo4j_connection()
+    
+    # 문서 메타데이터 추가
+    if document_name:
+        for doc in graph_documents:
+            for node in doc.nodes:
+                node.properties = node.properties or {}
+                node.properties['source_document'] = document_name
+                node.properties['created_at'] = datetime.now().isoformat()
+    
+    graph.add_graph_documents(graph_documents)
 ```
 
 **활용 방식:**
 - **Neo4jGraph**로 Neo4j 데이터베이스와 통합
-- LangChain의 그래프 문서 형식을 직접 Neo4j에 저장
+- **메타데이터 강화**: 소스 문서 및 생성 시간 정보 추가
+- **전역 연결 풀링**으로 효율적인 연결 관리
+- **누적 그래프 기능**: 여러 문서의 지식을 통합하여 저장
 
 ## LangChain 장점
 
@@ -93,6 +128,35 @@ def get_neo4j_connection():
 - 다른 그래프 데이터베이스로 마이그레이션 용이
 - 추가 기능(에이전트, 체인 등) 통합 가능
 
-이 프로젝트에서 LangChain은 단순한 라이브러리를 넘어서 **LLM 애플리케이션 개발의 전체 생태계**를 제공합니다. 특히 텍스트에서 지식 그래프를 추출하는 복잡한 작업을 몇 줄의 코드로 구현할 수 있게 해주며, 다양한 AI 모델과 데이터베이스 간의 통합을 원활하게 만들어줍니다.
+## 생명의학 도메인 특화
 
-LangChain의 표준화된 인터페이스 덕분에 이 애플리케이션은 미래의 기술 변화에도 쉽게 적응할 수 있으며, 새로운 기능을 빠르게 추가할 수 있는 확장 가능한 아키텍처를 갖추고 있습니다.
+### 1. 도메인 특화 그래프 구조
+```python
+# kg_config.py에서 정의된 생명의학 엔티티 및 관계
+BIOMEDICAL_ENTITIES = ["Gene", "Protein", "Disease", "Drug", "Pathway", ...]
+BIOMEDICAL_RELATIONSHIPS = ["REGULATES", "INTERACTS_WITH", "CAUSES", ...]
+```
+
+### 2. 맞춤형 시스템 프롬프트
+```python
+SYSTEM_PROMPT = (
+    "You are a top-tier algorithm designed for extracting information in structured "
+    "formats to build a knowledge graph.\n"
+    "You are also an expert in biomedical domain knowledge.\n"
+    "DO NOT use generic terms like 'Gene', 'Protein' for Node IDs.\n"
+    "Use specific names or identifiers from the text, such as 'BRCA1', 'Diabetes', etc."
+)
+```
+
+### 3. 청킹 전략
+```python
+TEXT_SPLITTER = RecursiveCharacterTextSplitter(
+    separators=["\n\n", "\n", ". ", ".", " ", ""],
+    chunk_size=1500,
+    chunk_overlap=200
+)
+```
+
+이 프로젝트에서 LangChain은 **생명의학 도메인에 특화된 지식 그래프 구축 플랫폼**을 제공합니다. Google Gemini의 강력한 언어 이해 능력과 결합하여 복잡한 생명의학 텍스트에서 정확한 엔티티와 관계를 추출하며, 대용량 문서 처리를 위한 청킹 및 비동기 처리를 통해 실용적인 성능을 보장합니다.
+
+LangChain의 모듈화된 아키텍처 덕분에 다른 LLM 모델로의 전환이나 추가 기능 통합이 용이하며, 지속적으로 발전하는 생명의학 연구 분야의 요구사항에 유연하게 대응할 수 있습니다.
