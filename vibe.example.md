@@ -28,7 +28,7 @@
 # 1. 시스템 프롬프트를 업데이트 하여 지식 그래프 생성 고도화 하기
 
 ### kg_config.py 수정
-kg config.py 파일에 있는 **`BIOMEDICAL_ENTITIES`**와 **`BIOMEDICAL_RELATIONSHIPS`**이 저희가 관심 있는 모든 객체와 관계를 포함하는지 살펴봅시다. 잘 떠오르지 않는다면 Copilot에게 나의 설명을 설명하여 적절한 entity와 관계를 추천 받아봅시다.  
+kg config.py 파일에 있는 **`BIOMEDICAL_ENTITIES`** 와 **`BIOMEDICAL_RELATIONSHIPS`** 이 저희가 관심 있는 모든 객체와 관계를 포함하는지 살펴봅시다. 잘 떠오르지 않는다면 Copilot에게 나의 설명을 설명하여 적절한 entity와 관계를 추천 받아봅시다.  
 ```
 너는 바이오 도메인, 특히 코로나 19의 전문가야. 나는 LLM을 이용해서 COVID-19 논문 텍스트를 가지고 지식 그래프를 구축하려고 해. 현재 내가 LLM에게 추출하라고 한 Entity와 Relation의 목록은 #kg_config.py에 있어. 하지만 이는 실제 논문들에 등장할 수 있는 entity와 relation에 비하면 턱없이 부족해. COVID-19 지식 그래프를 구축하기 위해 추가적으로 추출해야할 entity와 relation이 뭐가 있는지 나열해줘.
 ```
