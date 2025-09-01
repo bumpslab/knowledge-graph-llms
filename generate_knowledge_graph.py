@@ -56,7 +56,7 @@ TEXT_SPLITTER = RecursiveCharacterTextSplitter(
 
 # System prompt for LLMGraphTransformer
 SYSTEM_PROMPT = (
-    "# Knowledge Graph Instructions for GPT-4\n"
+    "# Knowledge Graph Instructions for Gemini\n"
     "## 1. Overview\n"
     "You are a top-tier algorithm designed for extracting information in structured "
     "formats to build a knowledge graph.\n"
@@ -361,20 +361,15 @@ def visualize_graph(graph_documents):
             
             # Adaptive scaling based on graph size and max degree
             if num_nodes < 50 or max_degree < 10:
-                # Small graph: more aggressive scaling for better distinction
-                base_size = 7
-                scale_factor = 15
-                node_size = base_size + scale_factor * (degree ** 1.3)
-                max_size = 300
+                # Small graph: use equal node sizes
+                node_size = 25
             else:
                 # Large graph: gentler scaling to avoid huge nodes
                 base_size = 6
                 scale_factor = 10
-                offset = 2
                 node_size = base_size + scale_factor * degree**0.5
                 max_size = 400
-            
-            node_size = min(max_size, max(base_size, node_size))
+                node_size = min(max_size, max(base_size, node_size))
             net.add_node(
                 node.id, 
                 label=node.id, 
@@ -470,20 +465,15 @@ def get_accumulated_graph_visualization():
             
             # Adaptive scaling based on graph size and max degree
             if num_nodes < 50 or max_degree < 10:
-                # Small graph: more aggressive scaling for better distinction
-                base_size = 7
-                scale_factor = 15
-                node_size = base_size + scale_factor * (degree ** 1.3)
-                max_size = 300
+                # Small graph: use equal node sizes
+                node_size = 25
             else:
                 # Large graph: gentler scaling to avoid huge nodes
                 base_size = 6
                 scale_factor = 10
-                offset = 2
                 node_size = base_size + scale_factor * degree**0.5
                 max_size = 400
-            
-            node_size = min(max_size, max(base_size, node_size))
+                node_size = min(max_size, max(base_size, node_size))
             net.add_node(
                 node['internal_id'], 
                 label=node['id'], 
