@@ -1,6 +1,7 @@
 # 바이브 코딩으로 지식 그래프 기반 QA 애플리케이션 만들기
 
 > **다음 자료들도 읽어보세요**: 
+>- [Github Copilot 사용자 지정 지침](https://docs.github.com/ko/copilot/how-tos/configure-custom-instructions/add-repository-instructions)  
 >- [Github Copilot chat 기능](https://docs.github.com/ko/copilot/how-tos/use-chat/use-chat-in-ide#using-keywords-in-your-prompt) 
 >- [Github Copilot Tips, tricks, best practices](https://github.blog/developer-skills/github/how-to-use-github-copilot-in-your-ide-tips-tricks-and-best-practices/)
 
