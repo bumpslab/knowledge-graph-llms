@@ -3,8 +3,8 @@ Configuration file for biomedical knowledge graph extraction
 Customize entities, relationships, and extraction parameters here
 """
 
-BIOMEDICAL_ENTITIES = ["ViralStrain","CellType","TissueType","OrganSystem","Disease","ClinicalOutcome",
-    "Drug","Vaccine"]
+BIOMEDICAL_ENTITIES = ["ViralStrain", "Disease", "CellType", "ImmuneResponse", 
+    "GeneExpression", "Drug", "BiologicalProcess", "Vaccine", "Receptor"]
 
 # Biomedical relationships as documented in component_explanation/biomedical_config.md
 BIOMEDICAL_RELATIONSHIPS = [
@@ -40,33 +40,3 @@ EXTRACTION_CONFIG = {
     "overlap": 200  # Overlap between chunks
 }
 
-# Core biomedical entities - expand as needed
-"""BIOMEDICAL_ENTITIES = [
-    # Molecular entities
-    "Gene", "Enzyme", "Antibody", "Antigen",
-    "Chemokine", "Mutation", "Serotype", "Epitope",
-    
-    # Pathological entities  
-    "Disease", "Symptom", "Pathology", "Complication", "Syndrome",
-    "Clinical_outcome", "Disease_severity", "Adverse_event", "Side_effect",
-    "Risk_factor",
-    
-    # Anatomical entities
-    "Cell_type", "Tissue_type", 
-    "Cellular_component", "Receptor", "Membrane",
-    
-    # Microbial entities
-    "Virus", "Viral_gene", 
-    "Viral_mutation", "Pathogen",
-    
-    # Therapeutic entities
-    "Drug", "Drug_class", "Vaccine", 
-    "Treatment_protocol", "Clinical_trial", "Therapy",
-    
-    # Process entities
-    "Biological_process",
-
-    # Population/Environmental
-    "Population_group", "Environmental_factor"
-]
-"""
