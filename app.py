@@ -73,8 +73,9 @@ else:
     # Text area for manual input
     text = st.sidebar.text_area("Input text", height=300)
 
-    if text:  # Check if the text area is not empty
-        if st.sidebar.button("Generate Knowledge Graph"):
+    # Always show the button, but only process if there's text
+    if st.sidebar.button("Generate Knowledge Graph"):
+        if text:  # Check if the text area is not empty
             with st.spinner("Generating knowledge graph..."):
                 # Call the function to generate the graph from the input text
                 document_name = "Manual Input"
@@ -88,3 +89,5 @@ else:
                 # Open the HTML file and display it within the Streamlit app
                 HtmlFile = open(output_file, 'r', encoding='utf-8')
                 components.html(HtmlFile.read(), height=1000)
+        else:
+            st.warning("Please enter some text before generating the knowledge graph.")
