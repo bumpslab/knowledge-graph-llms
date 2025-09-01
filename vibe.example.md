@@ -1,13 +1,69 @@
 # 바이브 코딩으로 지식 그래프 기반 QA 애플리케이션 만들기
 
+> **다음 자료들도 읽어보세요**: 
+>- [Github Copilot chat 기능](https://docs.github.com/ko/copilot/how-tos/use-chat/use-chat-in-ide#using-keywords-in-your-prompt) 
+>- [Github Copilot Tips, tricks, best practices](https://github.blog/developer-skills/github/how-to-use-github-copilot-in-your-ide-tips-tricks-and-best-practices/)
+
 ## 목표
 생성한 지식 그래프를 활용한 질의응답(Q&A) 애플리케이션을 만들어봅시다.  
 지식 그래프를 단순한 시각화를 넘어 실용적인 RAG(Retrieval Augmented Generation) 시스템을 만드는데 이용해봅시다.
 
+우선 본격적으로 코드베이스를 수정하기 전에 코드베이스에 대해서 이해해봅시다.
+
+> 참고: 본 실습에서는 **`Gemini-2.5-Pro`** 를 사용하는 것을 권장 드립니다.  
+> 유스케이스에 따라 가장 적합한 모델이 다를 수 있습니다.   
+> [Github 공식 문서: 모델 비교](https://docs.github.com/ko/copilot/reference/ai-models/model-comparison)  
+> [Github Copilot을 쓸 때 무슨 모델을 써야하나요?](https://github.blog/ai-and-ml/github-copilot/which-ai-model-should-i-use-with-github-copilot/)
+
+코드베이스에 대한 질문을 하기 위해서는 "Ask" 모드를 사용하는 것이 좋습니다.  
+다음과 같이 질문해봅시다.
+> #Codebase에 대해 설명해줘.
+
+좀 더 자세히 질문하고 싶다면,
+> #Codebase에 대해 완전히 이해하고 싶어. 이 프로젝트가 어떤 구조로 짜여져 있는지, 주요 파일, 함수, 클래스 등에 대해 자세히 설명해줘
+
+코드에 대해 더 자세히 알고 싶다면 코드를 드래그 해서 선택 한 뒤, **`ctrl + I`**, (mac에서는 **`cmd + I`**)를 누른 후 **`/explain`** 명령어를 사용하여 코드에 대한 설명을 받아봅시다.
+
+# 1. 시스템 프롬프트를 업데이트 하여 지식 그래프 생성 고도화 하기
+
+### kg_config.py 수정
+kg config.py 파일에 있는 **`BIOMEDICAL_ENTITIES`**와 **`BIOMEDICAL_RELATIONSHIPS`**이 저희가 관심 있는 모든 객체와 관계를 포함하는지 살펴봅시다. 잘 떠오르지 않는다면 Copilot에게 나의 설명을 설명하여 적절한 entity와 관계를 추천 받아봅시다.  
+```
+너는 바이오 도메인, 특히 코로나 19의 전문가야. 나는 LLM을 이용해서 COVID-19 논문 텍스트를 가지고 지식 그래프를 구축하려고 해. 현재 내가 LLM에게 추출하라고 한 Entity와 Relation의 목록은 #kg_config.py에 있어. 하지만 이는 실제 논문들에 등장할 수 있는 entity와 relation에 비하면 턱없이 부족해. COVID-19 지식 그래프를 구축하기 위해 추가적으로 추출해야할 entity와 relation이 뭐가 있는지 나열해줘.
+```
+Ask 모드 혹은 Agent 모드 둘 다 좋습니다.
+
+**버전 관리**:
+```bash
+git add .
+git commit -m "enhance biomedical entities and relationships"
+git push
+```
+
+### SYSTEM_PROMPT 수정 
+generate_knowledge_graph.py에 보면 **`SYSTEM_PROMPT`** 변수에 노드와 relation을 추출하기 위한 지시사항이 적혀 있는 것을 볼 수 있습니다. 지시사항을 보고 수정할 점이 없는지 Ask 모드에 질문해봅시다. 
+```
+너는 바이오 도메인, 특히 코로나 19의 전문가야. 나는 LLM을 이용해서 COVID-19 논문 텍스트를 가지고 지식 그래프를 구축하려고 해. 현재 내가 LLM에게 추출하라고 한 Entity와 Relation의 목록은 #kg_config.py에 있어. generate_knowledge_graph.py의 SYSTEM_PROMPT를 적절히 구성하기 위해서 고쳐야 할 점을 나열해줘.
+```
+
+혹은
+
+```
+너는 바이오 도메인, 특히 코로나 19의 전문가야. 나는 LLM을 이용해서 COVID-19 논문 텍스트를 가지고 지식 그래프를 구축하려고 해. 현재 내가 LLM에게 추출하라고 한 Entity와 Relation의 목록은 #kg_config.py에 있어. generate_knowledge_graph.py의 SYSTEM_PROMPT에 어떤 내용이 포함되어야 잘 추출할 수 있을까? .md 형태로 정리해줘.
+```
+
+**버전 관리**:
+```bash
+git add .
+git commit -m "improve system prompt for graph data extraction"
+git push
+```
+
+# 2. QA 어플리케이션 만들기
 ## 단계별 접근 방법
 
 ### 전체 개요
-복잡한 RAG QA 애플리케이션을 한 번에 구축하는 것은 어렵습니다. **복잡한 작업은 반드시 단계별로 쪼개서 진행해야 합니다**. 각 단계에서 작동하는 버전을 만들고, 테스트하고, 버전 관리를 한 후 다음 단계로 넘어가는 것이 중요합니다.
+복잡한 RAG QA 애플리케이션을 한 번에 구축하는 것은 어렵습니다. **복잡한 작업은 단계별로 쪼개서 진행하는게 좋습니다**. 각 단계에서 작동하는 버전을 만들고, 테스트하고, 버전 관리를 한 후 다음 단계로 넘어가는 것이 중요합니다.
 
 **4단계 로드맵:**
 1. **UI 구축** → 채팅 인터페이스 완성
