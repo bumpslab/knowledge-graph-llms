@@ -1,5 +1,7 @@
 # Build a Question Answering application over a Graph Database
 
+> 참조: [LangChain 공식문서: Graph DB로 QA 애플리케이션 만들기](https://python.langchain.com/docs/tutorials/graph/)
+
 This guide covers the basic ways to create a Q&A chain over a graph database. These systems allow us to ask a question about the data in a graph database and get back a natural language answer. First, we will show a simple out-of-the-box option and then implement a more sophisticated version with LangGraph.
 
 ## ⚠️ Security note ⚠️
